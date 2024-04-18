@@ -3,6 +3,7 @@ Capstone project for the Software Engineering discipline (MC656), which proposes
 
 Members:
 - Luiz Guilherme Sousa Nascimento - 230667
+- Vítor Paziam Magalhães - 238316
 
 ### Code
 
@@ -23,5 +24,3 @@ From the "develop" branch, we created the "backend" and "frontend" branches, whi
 The members were divided into 2 groups:
 - Dev Backend and Database (Luiz Guilherme Sousa Nascimento and Vitor Paziam Magalhães)
 - Dev Frontend (Victor Wu and Luiz Fernando Lima Leite)
-
-Pull requests made against the "backend" branch will be reviewed by another backend developer who is not the author of the PR. In the same way, it will also be done for the "frontend" branch.
