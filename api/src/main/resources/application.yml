@@ -1,0 +1,31 @@
+server:
+  port: 8082
+
+host.full.dns.auth.link: http://localhost:8082
+
+app:
+  name: api
+
+spring:
+  main.allow-bean-definition-overriding: false
+  datasource:
+    url: jdbc:mysql://db:3306/DATABASE_NAME?useSSL=false
+    username: root
+    password: DATABASE_PASSWORD
+    #   driver-class-name: com.mysql.jdbc.Driver
+
+    # Do not let the db die if idle
+    tomcat:
+      test-while-idle: true
+      validation-query: SELECT 1
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  #         format_sql: true
+  #         show_sql: true
+  #     generate-ddl: true
+
+
