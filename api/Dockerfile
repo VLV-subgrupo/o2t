@@ -7,7 +7,7 @@ WORKDIR /api/
 COPY . /api/
 
 
-RUN mvn clean package -DskipTests
+RUN mvn clean package
 
 
 EXPOSE 8082
