@@ -42,3 +42,43 @@ jobs:
         run: |
           cd api
           mvn test
+          
+  build-front-end:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+        
+    - name: Install Dependencies
+      run: |
+          cd frontend
+          npm install
+          
+    - name: Build Project
+      run: npm run build
+      working-directory: ./frontend
+
+  test-front-end:
+    name: Run Tests Frontend
+    runs-on: ubuntu-latest
+    needs: build-front-end
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install Dependencies
+      run: |
+          cd frontend
+          npm install
+
+    - name: Run Tests
+      run: npm run test
+      working-directory: ./frontend
