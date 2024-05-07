@@ -9,7 +9,7 @@ O storyboard abaixo ilustra um processo iterativo de elicitação de requisitos,
 **Ação:** Os desenvolvedores explicam o propósito da reunião e a importância de entender os requisitos dos atletas para a elaboração de uma nova aplicação que visa auxiliar os atletas nos jogos olímpicos de 2024.
 
 
-**Objetivo:** Estabelecer uma relação de confiança e abrir espaço para a comunicação aberta com os usuários futuros.
+**Objetivo:** Estabelecer uma relação de confiança e abrir espaço para a comunicação aberta com os usuários futuros e *stakeholders*.
 
 ### **Cena 2: Levantamento de Dores e Necessidades**
 
@@ -52,7 +52,7 @@ O storyboard abaixo ilustra um processo iterativo de elicitação de requisitos,
 
 **Objetivo:** Refinar os requisitos do software para garantir que ele seja eficaz, intuitivo e centrado no usuário.
 
-### **Cena 5:** Conclusão e Compromisso
+### **Cena 5:** Conclusão dos requisitos e Desenvolvimento
 
 **Cenário:** Os desenvolvedores e usuários finais revisam os requisitos finalizados e concordam com o próximo passo.
 
