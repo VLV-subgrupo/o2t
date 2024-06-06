@@ -37,10 +37,10 @@ A arquitetura do projeto O2T adota os seguintes estilos arquiteturais:
 
 - **Client-Server:** Separa claramente as responsabilidades entre o cliente (frontend) e o servidor (backend). No projeto, o frontend, desenvolvido em Next.js, fornece uma interface de usuário que se comunica com o backend via chamadas HTTP. O backend, implementado em Spring Boot, processa a lógica de negócios, interage com o banco de dados e retorna os dados necessários para o frontend.
 - **SOA (Service-Oriented Architecture) com RESTful APIs:** O backend expõe serviços através de APIs RESTful, permitindo que o frontend consuma esses serviços de maneira padronizada. Cada endpoint RESTful é responsável por realizar operações CRUD sobre os recursos da aplicação.
-- **MVC (Model-View-Controller):** A aplicação Spring Boot segue o padrão MVC, separando responsabilidades em:
-    - **Controller:** Manipula as requisições HTTP, delegando a lógica de negócios aos serviços.
-    - **Service:** Contém a lógica de negócios da aplicação, sendo responsável por implementar as operações necessárias.
-    - **Repository:** Interage diretamente com o banco de dados, executando operações CRUD. Utiliza Spring Data JPA para facilitar o acesso aos dados persistentes.
+- **MVC (Model-View-Controller):** Este padrão divide a aplicação em três componentes principais:
+    - **Model:** Representa os dados da aplicação e as regras de negócios associadas. No Spring Boot, isso é gerenciado por meio de entidades JPA que mapeiam diretamente para as tabelas do banco de dados (MySQL).
+    - **View:** Refere-se ao frontend, componente independente desenvolvido em Next.js, que se comunica com o backend através de dados processados no formato JSON.
+    - **Controller:** Recebe as entradas do usuário via HTTP, interage com os serviços (lógica de negócios) e retorna a resposta adequada. A nível de implementação, o Spring Boot utiliza uma divisão entre *Controllers*, que manipulam as requisições HTTP, delegando a lógica de negócios aos serviços, *Services*, que contêm a lógica de negócios da aplicação, sendo responsáveis por implementar as operações necessárias, e *Repositories*, que interagem diretamente com o banco de dados, executando operações CRUD e utilizando o Spring Data JPA para facilitar o acesso aos dados persistentes.
 
 ### Descrição dos Componentes e Suas Responsabilidades
 
