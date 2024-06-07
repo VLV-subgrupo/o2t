@@ -71,3 +71,15 @@ A arquitetura do projeto O2T adota os seguintes estilos arquiteturais:
 - **Single-Page Application:** Desenvolvida em Next.js, fornece toda a funcionalidade do O2T através de um navegador web, fazendo chamadas de API (JSON/HTTPS) para o backend Spring Boot.
 
 - **MySQL Database:** Armazena todos os dados persistentes do sistema, incluindo informações de usuários, treinos, labels e métricas de saúde. O banco de dados é acessado pelos repositórios dos componentes para realizar operações de leitura e escrita.
+
+### Padrões de Projeto
+
+- **Singleton:**
+
+O padrão Singleton é utilizado para garantir que uma classe tenha apenas uma instância, fornecendo um ponto global de acesso a essa instância. No projeto, por conta da utilização da *framework* Spring Boot, este padrão é definido como parte da implementação, dessa forma, todas as classes que possuem algum *decorator* são por definição *Singleton*, ou seja, são instanciadas uma única vez e, quando solicitadas, são reutilizadas. Por exemplo, as classes que possuem os *decorators Entity, Service, Repository, Controller, Bean*, entre outros.
+
+- **Controller:**
+
+O padrão Controller é empregado para gerenciar as requisições HTTP, separando a lógica de processamento de entrada e saída da lógica de negócios. Os controllers atuam como intermediários entre o frontend e os serviços, delegando as operações necessárias para os componentes de serviço. Cada funcionalidade principal da aplicação (registro, login, gerenciamento de treinos, etc.) possui um controller dedicado. Por exemplo, o *User Controller* gerencia todas as requisições relacionadas aos perfis dos usuários, delegando a lógica de negócios ao *User Service*. De maneira análoga, o *Register Controller* apresenta o mesmo papel na aplicação.
+
+Essas abordagens promovem uma arquitetura modular e organizada, onde a responsabilidade de cada parte do sistema é claramente definida e separada, facilitando a manutenção e a escalabilidade do projeto.
