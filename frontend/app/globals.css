@@ -1,41 +1,71 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 16%;
+    --foreground: 240 10% 3.9%;
 
-    --card: 0 0% 96%;
-    --card-foreground: 0 0% 16%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
 
-    --popover: 228 9% 11%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
 
-    --primary: 0 0% 96%;
-    --primary-foreground: 0 0% 16%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary:0 0% 16%;
-    --secondary-foreground: 0 0% 96%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 16%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
 
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 16%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground:0 0% 16%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 96%;
-    --input: 0 0% 96%;
-    --ring: 0 0% 16%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
 
-    --radius: 0.8rem;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
@@ -45,8 +75,82 @@
   }
 }
 
-* {
-  transition-property: all;
-  transition-duration: 250ms;
-  transition-timing-function: ease-out;
+@layer utilities {
+  .hoverText {
+    font-size: 14px;
+    opacity: 1;
+    transform: translateY(30px);
+    transition-duration: .3s;
+  }
+}
+
+* ::-webkit-scrollbar{
+  display: none;
+}
+
+h1{
+  @apply text-h1 font-bold
+}
+
+h2{
+    @apply text-h2 font-bold
+  }
+
+h3{
+  @apply text-h3 font-bold
+}
+
+h4{
+  @apply text-h4 font-bold
+}
+
+h5{
+  @apply text-h5 font-bold
+}
+
+h6{
+  @apply text-h6 font-semibold
+}
+
+p{
+  @apply text-p font-medium
+}
+
+.label{
+  @apply text-label font-semibold
+}
+
+::-ms-reveal {
+    display: none;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.rowCalender > :nth-child(2){
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+@keyframes timer {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-100%);
+    }
+  }
+
+.animate-timer {
+    animation: timer 1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
