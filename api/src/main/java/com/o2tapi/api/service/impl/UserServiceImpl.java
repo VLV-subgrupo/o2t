@@ -6,7 +6,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.o2tapi.api.exceptions.EntityNotFound;
-import com.o2tapi.api.exceptions.InvalidFieldFormat;
 import com.o2tapi.api.exceptions.PasswordUnmatch;
 import com.o2tapi.api.exceptions.UserAlreadyExists;
 import com.o2tapi.api.models.Register;
@@ -16,6 +15,7 @@ import com.o2tapi.api.pojo.RegisterDTO;
 import com.o2tapi.api.pojo.UserDTO;
 import com.o2tapi.api.repository.UserRepository;
 import com.o2tapi.api.service.UserService;
+import com.o2tapi.api.service.ValidationService;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,10 +26,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    ValidationService validationService;
+
     @Override
     public ResponseEntity<?> delete(User user) {
 
-        // verify if the user exists
         if (user != null) {
             throw new EntityNotFound("User not found");
         }
@@ -40,21 +42,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<User> update(UserDTO newUser, User actualUser) {
-        
-        // verify if the user's name, sport and email are not null
-        if (newUser.getName() == null) {
-            throw new InvalidFieldFormat("Name is required");
-        }
 
-        if (newUser.getSport() == null) {
-            throw new InvalidFieldFormat("Sport is required");
-        }
+        // Refatoração do code smells (Bloaters)
+        validationService.validateNotEmptyFields(new String[] {newUser.getName(), newUser.getEmail(), newUser.getSport()});        
 
-        if (newUser.getEmail() == null) {
-            throw new InvalidFieldFormat("Email is required");
-        }
-
-        // update the user's name, sport and email
         actualUser.setName(newUser.getName());
         actualUser.setEmail(newUser.getEmail());
         actualUser.setSport(newUser.getSport());
@@ -66,12 +57,10 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<User> updatePassword(PasswordDTO passwordDTO, User user) {
         Boolean passwordMatches = passwordEncoder.matches(passwordDTO.getPreviousPassword(), user.getPassword());
 
-        // verify if the current password matches the user's password
         if (!passwordMatches) {
             throw new PasswordUnmatch("Current password do not match.");
         }
 
-        // Encode the new password
         String encodedPassword = passwordEncoder.encode(passwordDTO.getNewPassword());
 
         user.setPassword(encodedPassword);
@@ -79,6 +68,7 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok(userRepository.save(user));
     }
 
+    // To create a user in Postman - Facilitate Tests
     @Override
     public ResponseEntity<User> create(RegisterDTO register) {
         return ResponseEntity.ok(this.create(register.getName(), register.getEmail(), register.getPassword(), register.getSport()));
@@ -92,29 +82,14 @@ public class UserServiceImpl implements UserService {
 
     private User create(String name, String email, String password, String sport) {
 
-        // verify if the user's name, sport, email and password are not null
-        if (name == null) {
-            throw new InvalidFieldFormat("Name is required");
-        }
+        // Refatoração do code smells (Bloaters)
+        validationService.validateNotEmptyFields(new String[] {name, email, sport, password});
+        validationService.validatePasswordField(password);
 
-        if (sport == null) {
-            throw new InvalidFieldFormat("Sport is required");
-        }
-
-        if (email == null) {
-            throw new InvalidFieldFormat("Email is required");
-        }
-
-        if (password == null || password.length() < 8) {
-            throw new InvalidFieldFormat("Password Missing or too short");
-        }
-
-        // verify if the email is already in use
         if (userRepository.findByEmail(email) != null) {
             throw new UserAlreadyExists("Email already in use: " + email);
         }
 
-        // Make a new user
         User user = new User();
         user.setName(name);
         user.setEmail(email);

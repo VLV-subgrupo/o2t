@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.o2tapi.api.exceptions.EntityNotFound;
+import com.o2tapi.api.exceptions.InvalidFieldFormat;
 import com.o2tapi.api.models.Register;
 import com.o2tapi.api.models.User;
 import com.o2tapi.api.repository.RegisterRepository;
@@ -53,4 +54,19 @@ public class ValidationServiceImpl implements ValidationService {
         }
         return user;
     }
+
+    public void validateNotEmptyFields(String[] fields) {
+        for (String f : fields) {
+            if (f == null || f.isEmpty()) {
+                throw new InvalidFieldFormat("The field"+f+"is required");
+            }
+        }
+    }
+
+    public void validatePasswordField(String password) {
+        if (password.length() < 8) {
+            throw new InvalidFieldFormat("Password must have at least 8 characters");
+        }
+    }
+
 }

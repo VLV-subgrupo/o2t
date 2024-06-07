@@ -10,4 +10,8 @@ public interface ValidationService {
     Register validateRegister(String email);
 
     User validateEmail(String email);
+
+    void validateNotEmptyFields(String[] fields);
+
+    void validatePasswordField(String password);
 }
