@@ -34,16 +34,16 @@ const Profile = () => {
                         </div>
                     </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="outline-none bg-darkgray text-light text-label w-44 mr-10 p-0 ">
+                <DropdownMenuContent className="outline-none bg-darkgray text-light text-label w-44 mr-10 p-0 border border-gay">
                     <DropdownMenuGroup>
                         <DrawerTrigger asChild>
                             <DropdownMenuItem className="group">
-                                <User className="size-4 stroke-light group-focus:ml-2 group-focus:size-[17px] transition-all ease-smooth duration-300"/>
+                                <User className="size-4 stroke-light group-focus:ml-2 transition-all ease-smooth duration-300"/>
                                 Profile
                             </DropdownMenuItem>
                         </DrawerTrigger>
                         <DropdownMenuItem className="group">
-                                <LogOut className="size-4 stroke-light group-focus:ml-2 group-focus:size-[17px] transition-all ease-smooth duration-300"/>
+                                <LogOut className="size-4 stroke-light group-focus:ml-2 transition-all ease-smooth duration-300"/>
                                 Logout
                         </DropdownMenuItem>
                     </DropdownMenuGroup>

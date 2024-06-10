@@ -4,19 +4,6 @@ import { buttonVariants } from "@/app/_components/ui/button"
 import { Calendar } from "@/app/_components/ui/calendar"
 import { cn } from "@/app/_lib/utils"
 import { useState } from "react"
-import { DayPicker } from "react-day-picker"
-
-type Prop = {
-    date : string
-}
-
-const DateHistory = ({date} : Prop) => {
-    return (
-        <div className="flex rounded-full size-8 justify-center items-center bg-red-400">
-            <h1 className=" text-p text-light font-medium">{date}</h1>
-        </div>
-    )
-}
 
 const Historic = () => {
     const [date, setDate] = useState<Date | undefined>(new Date())

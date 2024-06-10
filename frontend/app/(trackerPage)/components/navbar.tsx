@@ -7,6 +7,7 @@ import HeartIcon from "../../_components/icons/heartIcon";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Profile from "./profile";
+import Logo from "@/app/_components/o2t_logo";
 
 type Prop = {
     handleClick: () => void;
@@ -52,9 +53,7 @@ const NavBar = () => {
 
     return (
         <div className="w-full grid items-center grid-cols-3 px-[60px] py-4 sticky">
-            <h6 className="text-light">
-                O2T
-            </h6>
+            <Logo />
             <div className="grid grid-cols-3 gap-4 justify-self-center">
                 <Link href="/dashboard">
                     <NavButtons handleClick={() => changeState(0)} navButton={0} navState={navState == 0}></NavButtons>

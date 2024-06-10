@@ -1,7 +1,7 @@
 import { cn } from "../_lib/utils";
 
 type Props = {
-    className : string
+    className?: string
 }
 
 const Logo = ({className} : Props) => {
