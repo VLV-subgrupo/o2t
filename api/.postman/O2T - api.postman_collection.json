@@ -1,0 +1,209 @@
+{
+	"info": {
+		"_postman_id": "1ecef56f-5148-4737-b4ba-49767ed8beaa",
+		"name": "O2T - api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "26829357"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"marcos\",\n    \"email\": \"marcos@gmail.com\",\n    \"password\": \"12345678\",\n    \"sport\": \"corrida\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_v}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"fernando\",\n    \"email\": \"fernando@gmail.com\",\n    \"sport\": \"natacao\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_v}}/users/{id}/update"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Password",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"previousPassword\": \"aluno123\",\n    \"newPassword\": \"bolaquadrada\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_v}}/users/{id}/password"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{base_v}}/users/13"
+					},
+					"response": []
+				},
+				{
+					"name": "Find User by Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_v}}/users/email/{email}"
+					},
+					"response": []
+				},
+				{
+					"name": "Find User by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_v}}/users/{id}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Register",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"luiz\",\n    \"email\": \"luiz@gmail.com\",\n    \"password\": \"aluno123\",\n    \"sport\": \"futebol\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_v}}/auth/start"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Save token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if(jsonData.token){",
+									"        pm.environment.set(\"jwt_token\", jsonData.token);",
+									"    }",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"luiz@gmail.com\",\n    \"password\": \"aluno123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_v}}/auth/login"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Hello",
+			"item": [
+				{
+					"name": "Test",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_v}}/hello"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": "{{jwt_token}}"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
