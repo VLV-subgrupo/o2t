@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import com.o2tapi.api.exceptions.EntityNotFound;
 import com.o2tapi.api.exceptions.PasswordUnmatch;
 import com.o2tapi.api.exceptions.UserAlreadyExists;
-import com.o2tapi.api.models.Register;
 import com.o2tapi.api.models.User;
+import com.o2tapi.api.models.enums.Role;
 import com.o2tapi.api.pojo.PasswordDTO;
-import com.o2tapi.api.pojo.RegisterDTO;
+import com.o2tapi.api.pojo.RegisterRequest;
 import com.o2tapi.api.pojo.UserDTO;
 import com.o2tapi.api.repository.UserRepository;
 import com.o2tapi.api.service.UserService;
@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> delete(User user) {
 
-        if (user != null) {
+        if (user == null) {
             throw new EntityNotFound("User not found");
         }
         userRepository.delete(user);
@@ -68,17 +68,12 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok(userRepository.save(user));
     }
 
-    // To create a user in Postman - Facilitate Tests
+    // To create a user in Postman
     @Override
-    public ResponseEntity<User> create(RegisterDTO register) {
+    public ResponseEntity<User> create(RegisterRequest register) {
         return ResponseEntity.ok(this.create(register.getName(), register.getEmail(), register.getPassword(), register.getSport()));
     }
 
-
-    @Override
-    public ResponseEntity<User> create(Register register) {
-        return ResponseEntity.ok(this.create(register.getName(), register.getEmail(), register.getPassword(), register.getSport()));
-    }
 
     private User create(String name, String email, String password, String sport) {
 
@@ -86,7 +81,7 @@ public class UserServiceImpl implements UserService {
         validationService.validateNotEmptyFields(new String[] {name, email, sport, password});
         validationService.validatePasswordField(password);
 
-        if (userRepository.findByEmail(email) != null) {
+        if (userRepository.findByEmail(email).isPresent()) {
             throw new UserAlreadyExists("Email already in use: " + email);
         }
 
@@ -95,6 +90,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         user.setSport(sport);
+        user.setRole(Role.USER);
 
         return userRepository.save(user);
     }
