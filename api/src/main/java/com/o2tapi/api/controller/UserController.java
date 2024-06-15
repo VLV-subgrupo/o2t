@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.o2tapi.api.models.User;
 import com.o2tapi.api.pojo.PasswordDTO;
-import com.o2tapi.api.pojo.RegisterDTO;
+import com.o2tapi.api.pojo.RegisterRequest;
 import com.o2tapi.api.pojo.UserDTO;
 import com.o2tapi.api.service.UserService;
 import com.o2tapi.api.service.ValidationService;
@@ -40,7 +40,7 @@ public class UserController {
     // To test in Postman
     @PostMapping("users")
     @ApiOperation("Save user")
-    public ResponseEntity<User> saveUser(@Valid @RequestBody RegisterDTO user) {
+    public ResponseEntity<User> saveUser(@Valid @RequestBody RegisterRequest user) {
 
         return userService.create(user);
     }
@@ -64,7 +64,7 @@ public class UserController {
     }
 
 
-    @DeleteMapping("users/{id}/delete")
+    @DeleteMapping("users/{id}")
     @ApiOperation("Delete user by id")
     public ResponseEntity<?> delete(@PathVariable Long id) {
 

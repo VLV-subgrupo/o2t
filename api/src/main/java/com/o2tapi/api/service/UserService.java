@@ -2,10 +2,9 @@ package com.o2tapi.api.service;
 
 import org.springframework.http.ResponseEntity;
 
-import com.o2tapi.api.models.Register;
 import com.o2tapi.api.models.User;
 import com.o2tapi.api.pojo.PasswordDTO;
-import com.o2tapi.api.pojo.RegisterDTO;
+import com.o2tapi.api.pojo.RegisterRequest;
 import com.o2tapi.api.pojo.UserDTO;
 
 public interface UserService {
@@ -16,9 +15,7 @@ public interface UserService {
 
     ResponseEntity<User> updatePassword(PasswordDTO passwordDTO, User user);
 
-    ResponseEntity<User> create(RegisterDTO register);
-
-    ResponseEntity<User> create(Register register);
+    ResponseEntity<User> create(RegisterRequest register);
 
     ResponseEntity<User> find(User user);
 
