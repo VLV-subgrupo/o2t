@@ -50,7 +50,7 @@ const Timer = ({isPaused} : Prop) => {
 
     return (
         <div className="flex flex-col gap-0 w-48 py-3">
-            <h4 className="text-light ">Timer</h4>
+            <h5 className="text-light text-end mr-8">Timer</h5>
             <div className="w-full h-full relative overflow-hidden">
                 <div className="w-full h-full flex flex-col justify-evenly items-end z-40">
                     <div className="w-24 h-[2px] bg-gray"></div>
