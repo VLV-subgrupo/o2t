@@ -10,7 +10,6 @@ import { Button } from "@/app/_components/ui/button";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/app/_components/ui/tooltip";
 
-
 const Content = () => {
     return(
         <>
@@ -92,8 +91,8 @@ const HealthMetrics = () => {
 
     return (
         <div className="flex-1 flex flex-row gap-4 p-8 pr-0 pt-0 overflow-y-auto ">
-            <div className="flex-[1] flex flex-col gap-4 justify-between">
-                <h4 className="font-semibold">Metrics</h4>
+            <div className="flex-[1] flex flex-col justify-between">
+                <h5 className="font-semibold">Metrics</h5>
                 <Card className="" title='Weight'>
                     <div className="flex flex-row gap-2 items-center justify-center">
                         <InputNum length={4} childrenI={2}>
@@ -161,7 +160,7 @@ const HealthMetrics = () => {
                     </div>
                 </div>
             </div>
-            <Timer isPaused={isPaused}></Timer>
+            <Timer isPaused={isPaused} initialTime={0}></Timer> {/*TODO fix clock when pause and despause*/}
         </div>
     );
 }

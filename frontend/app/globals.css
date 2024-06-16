@@ -147,12 +147,12 @@ input[type=number] {
       transform: translateY(0);
     }
     100% {
-      transform: translateY(-100%);
+      transform: translateY(-20%);
     }
   }
 
 .animate-timer {
-    animation: timer 1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+    animation: timer 0.75s ease-out;
 }
 
 .mask-gradient {
