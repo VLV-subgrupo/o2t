@@ -60,7 +60,6 @@ const InputNum = ({length, childrenI, children}: PinInputProps) => {
                 ref={(input) => {
                     inputsRef.current[index] = input;
                 }}
-                autoFocus
                 onKeyDown={e => handleChange(e, index)}
                 />
                 {index === childrenI && children}

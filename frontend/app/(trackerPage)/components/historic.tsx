@@ -7,6 +7,7 @@ import { useState } from "react"
 
 const Historic = () => {
     const [date, setDate] = useState<Date | undefined>(new Date())
+    const today = new Date();
 
     return (
     <div className="w-full flex flex-col mb-2">
@@ -15,6 +16,17 @@ const Historic = () => {
         </div>
         <Calendar
             mode="single"
+            disabled={{ after: today }}
+            modifiers={{
+                disabled: { after: today },
+            }}
+            modifiersStyles={{
+                disabled: {},
+            }}
+            modifiersClassNames={{
+                outside: 'hidden-day'
+            }}
+            toMonth={new Date(today.getFullYear(), today.getMonth() + 1, 0)}
             selected={date}
             onSelect={setDate}
             className="w-full"
