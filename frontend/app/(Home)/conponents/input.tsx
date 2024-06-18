@@ -20,8 +20,8 @@ const Input = ({id, type = 'text', className, isRequired = true, isDisabled = fa
 
     return (
         <div className={`relative duration-200 ${hidden ? "hidden" : "" }`}>
-            <input type={type} id={id} onChange={handleChange} value={value} className={cn("peer w-96 bg-darkgray outline-none px-4 pt-5 rounded-[8px] h-[60px] text-p font-medium focus:outline-gray focus:outline placeholder-light", className)} required={isRequired} disabled={isDisabled} />
-            <label htmlFor={id} className={`top-0 left-0 pointer-events-none duration-300 absolute text-gray ml-4 transform translate-y-4 font-semibold peer-focus:translate-y-1 peer-focus:text-label peer-focus:text-lightgray ${value ? "translate-y-[4px] text-label text-lightgray" : 'text-p'}`}> {id} </label>
+            <input type={type} id={id} onChange={handleChange} value={value} className={cn("peer w-96 bg-darkgray outline-none px-4 pt-5 rounded-[8px] h-[60px] text-p font-medium focus:outline-lightgray focus:outline placeholder-light", className)} required={isRequired} disabled={isDisabled} />
+            <label htmlFor={id} className={`top-0 left-0 pointer-events-none duration-300 absolute text-lightgray ml-4 transform translate-y-4 font-semibold peer-focus:translate-y-1 peer-focus:text-label peer-focus:text-lightgray ${value ? "translate-y-[4px] text-label text-lightgray" : 'text-p'}`}> {id} </label>
         </div>
     );
 }

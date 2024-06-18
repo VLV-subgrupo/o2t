@@ -6,7 +6,7 @@ type Prop = {
 
 const Card = ({children, className, title}: Prop) => {
     return (
-        <div className={`${className} flex flex-col px-4 py-3 justify-start items-center has-[:focus]:bg-darkgray duration-500 transition-all rounded-md group`}>
+        <div className={`${className} flex flex-col gap-4 px-4 py-3 justify-start items-center has-[:focus]:bg-darkgray duration-500 transition-all rounded-md group`}>
             <h6 className="self-start text-lightgray font-bold group-has-[:focus]:text-light">
                 {title}
             </h6>

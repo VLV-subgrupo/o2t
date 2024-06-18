@@ -8,7 +8,7 @@ type Prop = {
 
 const RadioButton = ({title, selected = false} : Prop) =>{
     return(
-        <div className={`p-4 flex-1 h-32 flex flex-col border-[2px] rounded-lg select-none ${selected ? " border-lightgray bg-gray text-light" : "border-gray text-lightgray"}`}>
+        <div className={`p-4 flex-1 h-32 flex flex-col border-[2px] rounded-lg select-none cursor-pointer ${selected ? " border-lightgray bg-gray text-light" : "border-gray text-lightgray"}`}>
             <div className="flex w-full flex-row justify-between items-center">
                 <p className="font-semibold">
                     {title}
@@ -28,7 +28,7 @@ const Dashboard = () => {
     return (
         <div className="flex-1 flex flex-col gap-4">
             <div className="flex-grow w-full flex flex-row px-4 gap-4">
-                <div className=" flex flex-col w-full p-4 select-none outline-3 outline outline-transparent hover:outline-gray rounded-lg transition-all duration-300">
+                <div className=" flex flex-col w-full p-4 select-none outline-3 outline outline-transparent hover:outline-gray rounded-lg transition-all duration-300 relative">
                     <div className="absolute flex flex-row gap-8 self-center mt-[4%] items-center">
                         <h6 className="text-lightgray flex items-center gap-4">Goal <span className="text-h3 font-bold text-light">120 <span className="text-p font-semibold">min</span></span></h6>
                         <div className="h-7 w-[2px] bg-gray"></div>
