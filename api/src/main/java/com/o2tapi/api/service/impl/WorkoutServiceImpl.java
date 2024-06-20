@@ -10,13 +10,10 @@ import org.springframework.stereotype.Service;
 import com.o2tapi.api.exceptions.EntityNotFound;
 import com.o2tapi.api.models.Workout;
 import com.o2tapi.api.models.User;
-import com.o2tapi.api.pojo.WorkoutRequest;
 import com.o2tapi.api.pojo.TimerRequest;
 import com.o2tapi.api.pojo.WorkoutDTO;
 import com.o2tapi.api.repository.WorkoutRepository;
-import com.o2tapi.api.repository.UserRepository;
 import com.o2tapi.api.service.WorkoutService;
-import com.o2tapi.api.service.ValidationService;
 
 @Service
 public class WorkoutServiceImpl implements WorkoutService {
@@ -24,36 +21,23 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Autowired
     WorkoutRepository workoutRepository;
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    ValidationService validationService;
-
     @Override
-    public ResponseEntity<?> delete(Workout workout) {
+    public ResponseEntity<String> delete(Workout workout) {
 
-        if (workout == null) {
-            throw new EntityNotFound("Workout not found");
-        }
         workoutRepository.delete(workout);
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok("Workout of id " + workout.getId() + " deleted successfully");
     }
 
     @Override
     public ResponseEntity<Workout> updateFields(WorkoutDTO newWorkout, Workout actualWorkout) {
-
-        // Refatoração do code smells (Bloaters)
-        validationService.validateNotEmptyFields(new String[] {newWorkout.getTitle(), newWorkout.getDescription()});        
-
+     
         actualWorkout.setRegistrationDate(newWorkout.getRegistrationDate());
         actualWorkout.setTitle(newWorkout.getTitle());
         actualWorkout.setDescription(newWorkout.getDescription());
-        actualWorkout.setLabels(newWorkout.getLabels());
-        workoutRepository.save(actualWorkout);
+        // actualWorkout.setLabels(newWorkout.getLabels()); 
         
-        return ResponseEntity.ok(actualWorkout);
+        return ResponseEntity.ok(workoutRepository.save(actualWorkout));
     }
 
     @Override
@@ -66,22 +50,18 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public ResponseEntity<Workout> create(WorkoutRequest register) {    
-
-        // Refatoração do code smells (Bloaters)
-        validationService.validateNotEmptyFields(new String[] {register.getTitle(), register.getDescription()});
+    public ResponseEntity<Workout> create(WorkoutDTO register, User user) {    
 
         Workout workout = new Workout();
         workout.setRegistrationDate(register.getRegistrationDate());
         workout.setTitle(register.getTitle());
+        workout.setDescription(register.getDescription());
         
-        // Na criação, o workout não tem data de início e fim (duração) definidos
+        // During creation, the workout does not have a start and end date (duration) defined
         workout.setStartDate(null);
         workout.setEndDate(null);
-
-        workout.setDescription(register.getDescription());
-        workout.setCreatedBy(register.getCreatedBy());
-        // TODO: add labels to WorkoutRequest 
+    
+        workout.setCreatedBy(user);    
         // workout.setLabels(register.getLabels());
 
         return ResponseEntity.ok(workoutRepository.save(workout));
@@ -93,17 +73,14 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public ResponseEntity<List<Workout>> findAllByUser(Long userId) {
-        User user = validationService.validateUser(userId);
-        
+    public ResponseEntity<List<Workout>> findAllByUser(User user) {        
         return ResponseEntity.ok(workoutRepository.findAllByCreatedBy(user)); 
     }
 
     @Override
-    public ResponseEntity<Workout> findByUserAndRegistrationDate(Long userId, Date registrationDate) {
-        User user = validationService.validateUser(userId);
+    public ResponseEntity<Workout> findByUserAndRegistrationDate(User user, Date registrationDate) {
         Workout workout = workoutRepository.findByCreatedByAndRegistrationDate(user, registrationDate)
-                .orElseThrow(() -> new EntityNotFound("Workout not found for user with id: " + userId + " on date: " + registrationDate));
+                .orElseThrow(() -> new EntityNotFound("Workout not found for user with id " + user.getId() + " on date " + registrationDate));
         return ResponseEntity.ok(workout);
     }
 }
