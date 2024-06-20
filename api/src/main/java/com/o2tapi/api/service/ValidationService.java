@@ -1,6 +1,7 @@
 package com.o2tapi.api.service;
 
 import com.o2tapi.api.models.User;
+import com.o2tapi.api.models.Workout;
 
 public interface ValidationService {
     
@@ -11,4 +12,6 @@ public interface ValidationService {
     void validateNotEmptyFields(String[] fields);
 
     void validatePasswordField(String password);
+    
+    Workout validateWorkout(Long id);
 }
