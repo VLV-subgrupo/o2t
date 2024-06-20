@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.o2tapi.api.models.User;
 import com.o2tapi.api.models.Workout;
 import com.o2tapi.api.pojo.WorkoutDTO;
-import com.o2tapi.api.pojo.WorkoutRequest;
 import com.o2tapi.api.pojo.TimerRequest;
 import com.o2tapi.api.service.WorkoutService;
 import com.o2tapi.api.service.ValidationService;
@@ -32,7 +32,7 @@ import jakarta.validation.Valid;
 @CrossOrigin
 @Api(value = "WorkoutController", produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/v1/workouts")
 public class WorkoutController {
 
     @Autowired
@@ -42,33 +42,38 @@ public class WorkoutController {
     private WorkoutService workoutService;
 
     // To test in Postman
-    @PostMapping("workouts")
+    @PostMapping()
     @ApiOperation("Save workout")
-    public ResponseEntity<Workout> saveWorkout(@Valid @RequestBody WorkoutRequest register) {
+    public ResponseEntity<Workout> createWorkout(@Valid @RequestBody WorkoutDTO register) {
+        
+        User user = validationService.validateUser(register.getCreatedById());
+        // validationService.validateWorkoutFields(register);
 
-        return workoutService.create(register);
+        return workoutService.create(register, user);
     }
 
-    @PutMapping("workouts/{id}/update")
+    @PutMapping("/{id}/update")
     @ApiOperation("Update workout")
-    public ResponseEntity<Workout> update(@RequestBody WorkoutDTO workoutDTO, @PathVariable Long id) {
+    public ResponseEntity<Workout> updateWorkout(@RequestBody WorkoutDTO workoutDTO, @PathVariable Long id) {
         
         Workout workout = validationService.validateWorkout(id);
+        // validationService.validateWorkoutFields(workoutDTO);
 
         return workoutService.updateFields(workoutDTO, workout);
     }
 
-    @PutMapping("workouts/{id}/timer")
+    @PutMapping("/{id}/timer")
     @ApiOperation("Update workout timer")
-    public ResponseEntity<Workout> updateTimer(@RequestBody TimerRequest timer, @PathVariable Long id) {
+    public ResponseEntity<Workout> updateWorkoutTimer(@RequestBody TimerRequest timerRequest, @PathVariable Long id) {
         
         Workout workout = validationService.validateWorkout(id);
+        // validationService.validateWorkoutTimerFields(timerRequest);
 
-        return workoutService.updateTimer(timer, workout);
+        return workoutService.updateTimer(timerRequest, workout);
     }
 
 
-    @DeleteMapping("workouts/{id}")
+    @DeleteMapping("/{id}")
     @ApiOperation("Delete workout by id")
     public ResponseEntity<?> deleteWorkout(@PathVariable Long id) {
 
@@ -77,7 +82,7 @@ public class WorkoutController {
         return workoutService.delete(workout);
     }
 
-    @GetMapping("workouts/{id}")
+    @GetMapping("/{id}")
     @ApiOperation("Find workout by id")
     public ResponseEntity<Workout> findWorkout(@PathVariable Long id) {
 
@@ -86,18 +91,23 @@ public class WorkoutController {
         return workoutService.find(workout);
     }
 
-    @GetMapping("workouts/user/{userId}")
+    @GetMapping("/user/{userId}")
     @ApiOperation("Find all workouts of a user")
     public ResponseEntity<List<Workout>> findAllWorkouts(@PathVariable Long userId) {
+        
+        User user = validationService.validateUser(userId);
 
-        return workoutService.findAllByUser(userId);
+        return workoutService.findAllByUser(user);
     }
 
-    @GetMapping("workouts/user/{userId}/date")
+    @GetMapping("/user/{userId}/date")
     @ApiOperation("Find workout by user id and registration date")
     public ResponseEntity<Workout> findSpecificUserWorkout(
             @PathVariable Long userId,
             @RequestParam("registrationDate") Date registrationDate) {
-        return workoutService.findByUserAndRegistrationDate(userId, registrationDate);
+        
+        User user = validationService.validateUser(userId);
+
+        return workoutService.findByUserAndRegistrationDate(user, registrationDate);
     }
 }
