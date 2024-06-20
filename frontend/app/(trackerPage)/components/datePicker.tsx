@@ -20,6 +20,7 @@ type Prop = {
 
 export function DatePicker({className} : Prop) {
   const [date, setDate] = React.useState<Date>()
+  const today = new Date()
 
   return (
     <Popover>
@@ -37,6 +38,8 @@ export function DatePicker({className} : Prop) {
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
           mode="single"
+          disabled={{ before: today }}
+          fromMonth={new Date(today.getFullYear(), today.getMonth() + 1, 0)}
           selected={date}
           onSelect={setDate}
           initialFocus

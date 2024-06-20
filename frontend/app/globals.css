@@ -188,16 +188,12 @@ input[type=number] {
     width: 100%;
     justify-content: center;
     flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
 .rowCalender tr{
     flex: initial !important;
-    justify-content: space-evenly !important;
     gap: 0.75rem;
-}
-
-tr:has(* .hidden-day) {
-    margin: 0 0.75rem 0 0.75rem;
 }
 
 td:not(:has(>.hidden-day)) {
