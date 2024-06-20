@@ -4,6 +4,8 @@ import com.o2tapi.api.models.Label;
 import com.o2tapi.api.pojo.LabelDTO;
 import com.o2tapi.api.models.User;
 import com.o2tapi.api.models.Workout;
+// import com.o2tapi.api.pojo.TimerRequest;
+// import com.o2tapi.api.pojo.WorkoutDTO;
 
 public interface ValidationService {
     
@@ -20,4 +22,8 @@ public interface ValidationService {
     void validateLabelFields(LabelDTO labelDTO, boolean isUpdate);
     
     Workout validateWorkout(Long id);
+
+    // void validateWorkoutFields(WorkoutDTO workoutDTO);
+
+    // void validateWorkoutTimerFields(TimerRequest timerRequest);
 }

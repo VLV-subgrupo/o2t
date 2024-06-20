@@ -1,6 +1,9 @@
 package com.o2tapi.api.service.impl;
 
 import java.util.List;
+// import java.text.ParseException;
+// import java.text.SimpleDateFormat;
+// import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,8 @@ import com.o2tapi.api.models.Label;
 import com.o2tapi.api.models.User;
 import com.o2tapi.api.pojo.LabelDTO;
 import com.o2tapi.api.models.Workout;
+// import com.o2tapi.api.pojo.TimerRequest;
+// import com.o2tapi.api.pojo.WorkoutDTO;
 import com.o2tapi.api.repository.UserRepository;
 import com.o2tapi.api.repository.LabelRepository;
 import com.o2tapi.api.repository.WorkoutRepository;
@@ -121,10 +126,48 @@ public class ValidationServiceImpl implements ValidationService {
     public Workout validateWorkout(Long id) {
         Optional<Workout> workout = workoutRepository.findById(id);
 
-        if (!workout.isPresent()) {
-            throw new EntityNotFound("Workout not found");
+        if (!workout.isEmpty()) {
+            throw new EntityNotFound("Workout of id " + id + " not found");
         }
 
         return workout.get();
     }
+
+    // @Override
+    // public void validateWorkoutFields(WorkoutDTO workoutDTO) {
+    //     validateNotEmptyFields(new String[] { workoutDTO.getTitle(), workoutDTO.getDescription() });
+    //     validateFieldLength(workoutDTO.getTitle(), "Title", 255);
+    //     validateFieldLength(workoutDTO.getDescription(), "Description", 1000);
+    //     validateDateField(workoutDTO.getRegistrationDate(), "registrationDate");
+    //     // TODO: Validate Labels
+    // }
+
+    // @Override
+    // public void validateWorkoutTimerFields(TimerRequest timerRequest) {
+    //     validateDateField(timerRequest.getStartDate(), "startDate");
+    //     validateDateField(timerRequest.getEndDate(), "endDate");
+    // }
+
+    // private void validateDateField(Date date, String fieldName) {
+    //     if (date != null && !isValidDateFormat(date.toString(), "yyyy-MM-dd HH:mm:ss")) {
+    //         throw new InvalidFieldFormat("Invalid " + fieldName + " format. Expected format: yyyy-MM-dd HH:mm:ss");
+    //     }
+    // }
+
+    // private boolean isValidDateFormat(String date, String format) {
+    //     try {
+    //         SimpleDateFormat sdf = new SimpleDateFormat(format);
+    //         sdf.setLenient(false);
+    //         sdf.parse(date);
+    //         return true;
+    //     } catch (ParseException e) {
+    //         return false;
+    //     }
+    // }
+
+    // private void validateFieldLength(String field, String fieldName, int maxLength) {
+    //     if (field != null && field.length() > maxLength) {
+    //         throw new InvalidFieldFormat(fieldName + " exceeds the maximum length of " + maxLength + " characters");
+    //     }
+    // }
 }
