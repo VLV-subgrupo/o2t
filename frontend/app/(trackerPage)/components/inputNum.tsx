@@ -3,12 +3,12 @@
 import { useState, useRef, Fragment } from 'react';
 
 type PinInputProps = {
-    length: number;
+    length?: number;
     childrenI?: number;
     children?: React.ReactElement,
 }
 
-const InputNum = ({length, childrenI, children}: PinInputProps) => {
+const InputNum = ({length = 1, childrenI, children}: PinInputProps) => {
   const [pin, setPin] = useState(Array(length).fill(' '));
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
