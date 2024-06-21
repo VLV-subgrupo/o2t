@@ -52,7 +52,7 @@ public class LabelController {
     public ResponseEntity<Label> updateLabel(@PathVariable Long id, @Valid @RequestBody LabelDTO labelDTO) {
         
         validationService.validateLabelFields(labelDTO, true);
-        Label existingLabel = validationService.validateLabelId(id);
+        Label existingLabel = validationService.validateLabel(id);
         
         return labelService.update(labelDTO, existingLabel);
     }
@@ -61,7 +61,7 @@ public class LabelController {
     @ApiOperation("Delete label by id")
     public ResponseEntity<String> deleteLabel(@PathVariable Long id) {
         
-        Label label = validationService.validateLabelId(id);
+        Label label = validationService.validateLabel(id);
 
         return labelService.delete(label);
     }
@@ -70,7 +70,7 @@ public class LabelController {
     @ApiOperation("Find label by id")
     public ResponseEntity<Label> findLabel(@PathVariable Long id) {
         
-        Label label = validationService.validateLabelId(id);
+        Label label = validationService.validateLabel(id);
 
         return labelService.find(label);
     }
