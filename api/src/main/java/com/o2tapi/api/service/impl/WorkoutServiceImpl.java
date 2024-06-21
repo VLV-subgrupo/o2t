@@ -2,14 +2,16 @@ package com.o2tapi.api.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.o2tapi.api.exceptions.EntityNotFound;
+import com.o2tapi.api.exceptions.InvalidFieldFormat;
 import com.o2tapi.api.models.Workout;
 import com.o2tapi.api.models.User;
+import com.o2tapi.api.models.Label;
 import com.o2tapi.api.pojo.TimerRequest;
 import com.o2tapi.api.pojo.WorkoutDTO;
 import com.o2tapi.api.repository.WorkoutRepository;
@@ -30,39 +32,50 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public ResponseEntity<Workout> updateFields(WorkoutDTO newWorkout, Workout actualWorkout) {
+    public ResponseEntity<Workout> updateFields(WorkoutDTO newWorkout, Workout actualWorkout, Set<Label> labels) {
      
         actualWorkout.setRegistrationDate(newWorkout.getRegistrationDate());
         actualWorkout.setTitle(newWorkout.getTitle());
         actualWorkout.setDescription(newWorkout.getDescription());
-        // actualWorkout.setLabels(newWorkout.getLabels()); 
+        actualWorkout.setLabels(labels); 
         
         return ResponseEntity.ok(workoutRepository.save(actualWorkout));
     }
 
     @Override
-    public ResponseEntity<Workout> updateTimer(TimerRequest timer, Workout workout) {
+    public ResponseEntity<Workout> updateTimer(TimerRequest timerRequest, Workout workout) {
 
-        workout.setStartDate(timer.getStartDate());
-        workout.setEndDate(timer.getEndDate());
+        Date startDate = timerRequest.getStartDate();
+        Date endDate = timerRequest.getEndDate();
+
+        if (startDate != null && endDate != null) {
+            workout.setStartDate(startDate);
+            workout.setEndDate(endDate);
+        } else if (startDate != null) {
+            workout.setStartDate(startDate);
+        } else if (endDate != null) {
+            workout.setEndDate(endDate);
+        } else {
+            throw new InvalidFieldFormat("Start and End Date cannot be null simultaneously");
+        }
 
         return ResponseEntity.ok(workoutRepository.save(workout));
     }
 
     @Override
-    public ResponseEntity<Workout> create(WorkoutDTO register, User user) {    
+    public ResponseEntity<Workout> create(WorkoutDTO register, User user, Set<Label> labels) {    
 
         Workout workout = new Workout();
         workout.setRegistrationDate(register.getRegistrationDate());
         workout.setTitle(register.getTitle());
         workout.setDescription(register.getDescription());
         
-        // During creation, the workout does not have a start and end date (duration) defined
+        // During creation, the workout does not have a start and end date defined 
         workout.setStartDate(null);
         workout.setEndDate(null);
     
         workout.setCreatedBy(user);    
-        // workout.setLabels(register.getLabels());
+        workout.setLabels(labels);
 
         return ResponseEntity.ok(workoutRepository.save(workout));
     }
@@ -78,9 +91,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public ResponseEntity<Workout> findByUserAndRegistrationDate(User user, Date registrationDate) {
-        Workout workout = workoutRepository.findByCreatedByAndRegistrationDate(user, registrationDate)
-                .orElseThrow(() -> new EntityNotFound("Workout not found for user with id " + user.getId() + " on date " + registrationDate));
-        return ResponseEntity.ok(workout);
+    public ResponseEntity<List<Workout>> findAllByUserAndRegistrationDate(User user, Date registrationDate) {
+        return ResponseEntity.ok(workoutRepository.findAllByCreatedByAndRegistrationDate(user, registrationDate));
     }
 }
