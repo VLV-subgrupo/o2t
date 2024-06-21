@@ -1,19 +1,23 @@
+'use client'
+
+import { useState } from "react";
 import Graph from "../components/graph";
 import Historic from "../components/historic";
 
 type Prop = {
     title : string,
     selected? : boolean
+    onSelect? : () => void
 }
 
-const RadioButton = ({title, selected = false} : Prop) =>{
+const RadioButton = ({title, selected = false , onSelect} : Prop) =>{
     return(
-        <div className={`p-4 flex-1 h-32 flex flex-col border-[2px] rounded-lg select-none cursor-pointer ${selected ? " border-lightgray bg-gray text-light" : "border-gray text-lightgray"}`}>
+        <div onClick={onSelect} className={`p-4 flex-1 h-32 flex flex-col border-[2px] rounded-lg select-none cursor-pointer transition-all duration-300 ${selected ? " border-lightgray text-light" : "border-darkgray text-lightgray"}`}>
             <div className="flex w-full flex-row justify-between items-center">
                 <p className="font-semibold">
                     {title}
                 </p>
-                <p className={`label px-2 rounded-sm bg-green-600 text-green-200`}>
+                <p className={` transition-all duration-500 label px-2 rounded-sm  ${selected ? "bg-green-600 text-green-200" : "text-lightgray bg-gray"}`}>
                     + 0.03%
                 </p>
             </div>
@@ -25,6 +29,9 @@ const RadioButton = ({title, selected = false} : Prop) =>{
 }
 
 const Dashboard = () => {
+    const [graphycType, setGraphycType] = useState('Weight')
+    const [timeGap, setTimeGap] = useState('M')
+
     return (
         <div className="flex-1 flex flex-col gap-4">
             <div className="flex-grow w-full flex flex-row px-4 gap-4">
@@ -42,18 +49,18 @@ const Dashboard = () => {
                             </p>
                         </div>
                         <div className="flex flex-row items-center gap-4 px-3 text-lightgray">
-                            <p className="size-9 bg-gray text-light grid place-items-center rounded-sm font-semibold cursor-pointer">1 W</p>
-                            <p className="size-9 hover:text-light grid place-items-center rounded-sm font-semibold cursor-pointer">1 M</p>
-                            <p className="size-9 hover:text-light grid place-items-center rounded-sm font-semibold cursor-pointer">1 Y</p>
+                            <p onClick={() => setTimeGap('W')} className={`size-9 transition-all duration-300 hover:text-light grid place-items-center rounded-sm font-semibold cursor-pointer ${timeGap == 'W' ? "bg-gray text-light" : ""}`}>1 W</p>
+                            <p onClick={() => setTimeGap('M')} className={`size-9 transition-all duration-300 hover:text-light grid place-items-center rounded-sm font-semibold cursor-pointer ${timeGap == 'M' ? "bg-gray text-light" : ""}`}>1 M</p>
+                            <p onClick={() => setTimeGap('Y')} className={`size-9 transition-all duration-300 hover:text-light grid place-items-center rounded-sm font-semibold cursor-pointer ${timeGap == 'Y' ? "bg-gray text-light" : ""}`}>1 Y</p>
                         </div>
                     </div>
                     <Graph />
                 </div>
                 <div className="flex flex-col justify-between items-center gap-4">
-                    <RadioButton title="Weight" selected={true}></RadioButton>
-                    <RadioButton title="Weight"></RadioButton>
-                    <RadioButton title="Weight"></RadioButton>
-                    <RadioButton title="Weight"></RadioButton>
+                    <RadioButton title="Weight" selected={graphycType == 'Weight'} onSelect={() => setGraphycType('Weight')}></RadioButton>
+                    <RadioButton title="Sleep" selected={graphycType == 'Sleep'} onSelect={() => setGraphycType('Sleep')}></RadioButton>
+                    <RadioButton title='Hydration' selected={graphycType == 'Hydration'} onSelect={() => setGraphycType('Hydration')}></RadioButton>
+                    <RadioButton title="Calories Burned" selected={graphycType == "Calories Burned"} onSelect={() => setGraphycType("Calories Burned")}></RadioButton>
                 </div>
             </div>
 

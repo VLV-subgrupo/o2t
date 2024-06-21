@@ -15,10 +15,10 @@ const Content = () => {
         <>
             <h2>Title</h2>
             <div className="flex flex-row gap-2 mt-2 mb-8">
-                <Tags className="bg-blue-500"/>
-                <Tags className="bg-blue-500"/>
-                <Tags className="bg-blue-500"/>
-                <Tags className="bg-blue-500"/>
+                <Tags name= 'abc' color= '#FFB3BA'/>
+                <Tags name= 'def' color= '#FFDFBA'/>
+                <Tags name= 'jhima' color= '#BAFFC9'/>
+                <Tags name= 'ghima' color= '#BAE1FF'/>
             </div>
             <p>
                 orem Ipsum
@@ -160,7 +160,7 @@ const HealthMetrics = () => {
                     </div>
                 </div>
             </div>
-            <Timer isPaused={isPaused} initialTime={0}></Timer> {/*TODO fix clock when pause and despause*/}
+            <Timer isPaused={isPaused} initialTime={0}></Timer>
         </div>
     );
 }
