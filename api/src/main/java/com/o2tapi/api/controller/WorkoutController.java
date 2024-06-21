@@ -2,6 +2,7 @@ package com.o2tapi.api.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,13 +15,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.o2tapi.api.models.User;
 import com.o2tapi.api.models.Workout;
+import com.o2tapi.api.models.Label;
 import com.o2tapi.api.pojo.WorkoutDTO;
-import com.o2tapi.api.pojo.TimerRequest;
+import com.o2tapi.api.pojo.FindWorkoutByDateRequest;
+import com.o2tapi.api.pojo.TimerRequest;    
 import com.o2tapi.api.service.WorkoutService;
 import com.o2tapi.api.service.ValidationService;
 
@@ -41,15 +43,15 @@ public class WorkoutController {
     @Autowired
     private WorkoutService workoutService;
 
-    // To test in Postman
     @PostMapping()
     @ApiOperation("Save workout")
     public ResponseEntity<Workout> createWorkout(@Valid @RequestBody WorkoutDTO register) {
         
         User user = validationService.validateUser(register.getCreatedById());
-        // validationService.validateWorkoutFields(register);
+        Set<Label> labels = validationService.validateLabels(register.getLabelsIds(), user); 
+        validationService.validateWorkoutFields(register);
 
-        return workoutService.create(register, user);
+        return workoutService.create(register, user, labels);
     }
 
     @PutMapping("/{id}/update")
@@ -57,9 +59,11 @@ public class WorkoutController {
     public ResponseEntity<Workout> updateWorkout(@RequestBody WorkoutDTO workoutDTO, @PathVariable Long id) {
         
         Workout workout = validationService.validateWorkout(id);
-        // validationService.validateWorkoutFields(workoutDTO);
+        User user = validationService.validateUser(workoutDTO.getCreatedById());
+        Set<Label> labels = validationService.validateLabels(workoutDTO.getLabelsIds(), user); 
+        validationService.validateWorkoutFields(workoutDTO);
 
-        return workoutService.updateFields(workoutDTO, workout);
+        return workoutService.updateFields(workoutDTO, workout, labels);
     }
 
     @PutMapping("/{id}/timer")
@@ -67,28 +71,20 @@ public class WorkoutController {
     public ResponseEntity<Workout> updateWorkoutTimer(@RequestBody TimerRequest timerRequest, @PathVariable Long id) {
         
         Workout workout = validationService.validateWorkout(id);
-        // validationService.validateWorkoutTimerFields(timerRequest);
 
         return workoutService.updateTimer(timerRequest, workout);
     }
 
-
     @DeleteMapping("/{id}")
     @ApiOperation("Delete workout by id")
-    public ResponseEntity<?> deleteWorkout(@PathVariable Long id) {
-
-        Workout workout = validationService.validateWorkout(id);
-
-        return workoutService.delete(workout);
+    public ResponseEntity<String> deleteWorkout(@PathVariable Long id) {
+        return workoutService.delete(validationService.validateWorkout(id));
     }
 
     @GetMapping("/{id}")
     @ApiOperation("Find workout by id")
     public ResponseEntity<Workout> findWorkout(@PathVariable Long id) {
-
-        Workout workout = validationService.validateWorkout(id);
-
-        return workoutService.find(workout);
+        return workoutService.find(validationService.validateWorkout(id));
     }
 
     @GetMapping("/user/{userId}")
@@ -102,12 +98,14 @@ public class WorkoutController {
 
     @GetMapping("/user/{userId}/date")
     @ApiOperation("Find workout by user id and registration date")
-    public ResponseEntity<Workout> findSpecificUserWorkout(
+    public ResponseEntity<List<Workout>> findAllUserWorkoutsForDate(
             @PathVariable Long userId,
-            @RequestParam("registrationDate") Date registrationDate) {
+            @RequestBody FindWorkoutByDateRequest findRequest) {
         
         User user = validationService.validateUser(userId);
-
-        return workoutService.findByUserAndRegistrationDate(user, registrationDate);
+        Date registrationDate = findRequest.getRegistrationDate();
+        validationService.validateRegistrationDate(registrationDate);
+        
+        return workoutService.findAllByUserAndRegistrationDate(user, registrationDate);
     }
 }
