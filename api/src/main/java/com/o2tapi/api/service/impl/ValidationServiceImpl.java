@@ -155,12 +155,12 @@ public class ValidationServiceImpl implements ValidationService {
         validateDateField(registrationDate, "registrationDate");
     }
 
-    private boolean isValidColorFormat(String color) {
+    public boolean isValidColorFormat(String color) {
         // Check if the color has the correct format (hexadecimal RGB)
         return color.matches("^#([A-Fa-f0-9]{6})$");
     }
     
-    private boolean isLabelNameUnique(String name, User user, boolean isUpdate) {
+    public boolean isLabelNameUnique(String name, User user, boolean isUpdate) {
         // Check if the label name is unique for the user    
         List<Label> labelsOfUser = labelRepository.findAllByCreatedBy(user);
 
@@ -176,7 +176,7 @@ public class ValidationServiceImpl implements ValidationService {
         return true;
     }
 
-    private void validateDateField(Date date, String fieldName) {
+    public void validateDateField(Date date, String fieldName) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"); // Date format ISO 8601
         sdf.setLenient(false);
         if (date != null) {
@@ -188,7 +188,7 @@ public class ValidationServiceImpl implements ValidationService {
         }
     }
 
-    private void validateFieldLength(String field, String fieldName, int maxLength) {
+    public void validateFieldLength(String field, String fieldName, int maxLength) {
         if (field != null && field.length() > maxLength) {
             throw new InvalidFieldFormat(fieldName + " exceeds the maximum length of " + maxLength + " characters");
         }
