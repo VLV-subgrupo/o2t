@@ -21,7 +21,7 @@ const ListItem = ({selected, title, date, tags = []} : Prop) => {
             </div>
             <div className="flex flex-row gap-4 justify-end">
                 {tags.map((tag, index) => (
-                    <Tags key={index} selected={selected} name={tag} />
+                    <Tags key={index} selected={selected} name={tag} color="#FFFFFF"/>
                 ))}
             </div>
         </div>
