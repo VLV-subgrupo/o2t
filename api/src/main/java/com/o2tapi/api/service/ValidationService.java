@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Set;
 
 import com.o2tapi.api.models.Label;
+import com.o2tapi.api.models.Metric;
 import com.o2tapi.api.pojo.LabelDTO;
 import com.o2tapi.api.models.User;
 import com.o2tapi.api.models.Workout;
@@ -33,4 +34,6 @@ public interface ValidationService {
     void validateWorkoutTimerFields(TimerRequest timerRequest);
 
     void validateRegistrationDate(Date registrationDate);
+
+    Metric validateMetric(Long id);
 }

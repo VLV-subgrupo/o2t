@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.o2tapi.api.exceptions.EntityNotFound;
 import com.o2tapi.api.exceptions.InvalidFieldFormat;
 import com.o2tapi.api.models.Label;
+import com.o2tapi.api.models.Metric;
 import com.o2tapi.api.models.User;
 import com.o2tapi.api.pojo.LabelDTO;
 import com.o2tapi.api.models.Workout;
@@ -21,6 +22,7 @@ import com.o2tapi.api.pojo.TimerRequest;
 import com.o2tapi.api.pojo.WorkoutDTO;
 import com.o2tapi.api.repository.UserRepository;
 import com.o2tapi.api.repository.LabelRepository;
+import com.o2tapi.api.repository.MetricRepository;
 import com.o2tapi.api.repository.WorkoutRepository;
 import com.o2tapi.api.service.ValidationService;
 
@@ -37,6 +39,9 @@ public class ValidationServiceImpl implements ValidationService {
     
     @Autowired
     private WorkoutRepository workoutRepository;
+
+    @Autowired
+    private MetricRepository metricRepository;
 
     @Override
     public User validateUser(Long id) {
@@ -134,6 +139,17 @@ public class ValidationServiceImpl implements ValidationService {
         }
 
         return workout.get();
+    }
+
+    @Override
+    public Metric validateMetric(Long id) {
+        Optional<Metric> metric = metricRepository.findById(id);
+
+        if (metric.isEmpty()) {
+            throw new EntityNotFound("Metric of id " + id + " not found");
+        }
+
+        return metric.get();
     }
 
     @Override
