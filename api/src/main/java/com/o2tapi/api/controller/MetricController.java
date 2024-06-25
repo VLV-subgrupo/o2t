@@ -76,7 +76,7 @@ public class MetricController {
     
     @GetMapping("/user/{userId}")
     @ApiOperation("Find all metric by user id")
-    public ResponseEntity<List<Metric>> findAllByUser(@PathVariable Long userId) {
+    public ResponseEntity<List<Metric>> findAllMetrics(@PathVariable Long userId) {
         
         User user = validationService.validateUser(userId);
 
