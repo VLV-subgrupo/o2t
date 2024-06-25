@@ -12,12 +12,16 @@ import com.o2tapi.api.models.enums.MetricType;
 import com.o2tapi.api.pojo.MetricDTO;
 import com.o2tapi.api.repository.MetricRepository;
 import com.o2tapi.api.service.MetricService;
+import com.o2tapi.api.service.ValidationService;
 
 @Service
 public class MetricServiceImpl implements MetricService{
 
     @Autowired
     private MetricRepository metricRepository;
+
+    @Autowired
+    private ValidationService validationService;
 
     @Override
     public ResponseEntity<String> delete(Metric metric) {
@@ -29,6 +33,8 @@ public class MetricServiceImpl implements MetricService{
     
     @Override
     public ResponseEntity<Metric> update(MetricDTO newMetric, Metric actualMetric) {
+
+        validationService.validateNotEmptyFields(new String[] {newMetric.getMetricType()});
 
         actualMetric.setRegistrationDate(newMetric.getRegistrationDate());
         actualMetric.setValue(newMetric.getValue());

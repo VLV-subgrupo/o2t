@@ -3,6 +3,7 @@ package com.o2tapi.api.service;
 import java.util.Date;
 import java.util.Set;
 
+import com.o2tapi.api.models.Goal;
 import com.o2tapi.api.models.Label;
 import com.o2tapi.api.models.Metric;
 import com.o2tapi.api.pojo.LabelDTO;
@@ -17,7 +18,7 @@ public interface ValidationService {
 
     User validateEmail(String email);
 
-    void validateNotEmptyFields(String[] fields);
+    void validateNotEmptyFields(Object[] fields);
 
     void validatePasswordField(String password);
 
@@ -36,4 +37,6 @@ public interface ValidationService {
     void validateRegistrationDate(Date registrationDate);
 
     Metric validateMetric(Long id);
+
+    Goal validateGoal(Long id);
 }

@@ -26,7 +26,7 @@ import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 
 @CrossOrigin
-@Api(value = "LabelController", produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(value = "MetricController", produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
 @RequestMapping("/v1/metric")
 public class MetricController {
