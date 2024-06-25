@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.o2tapi.api.models.Goal;
 import com.o2tapi.api.models.User;
+import com.o2tapi.api.pojo.CrossPermission;
 import com.o2tapi.api.pojo.GoalDTO;
 import com.o2tapi.api.service.GoalService;
 import com.o2tapi.api.service.ValidationService;
@@ -25,7 +26,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 
-@CrossOrigin
+@CrossOrigin(origins = CrossPermission.allowed_url)
 @Api(value = "GoalController", produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
 @RequestMapping("/v1/goal")

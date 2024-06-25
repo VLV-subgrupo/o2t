@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.o2tapi.api.models.Metric;
 import com.o2tapi.api.models.User;
+import com.o2tapi.api.pojo.CrossPermission;
 import com.o2tapi.api.pojo.MetricDTO;
 import com.o2tapi.api.service.MetricService;
 import com.o2tapi.api.service.ValidationService;
@@ -25,7 +26,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 
-@CrossOrigin
+@CrossOrigin(origins = CrossPermission.allowed_url)
 @Api(value = "MetricController", produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
 @RequestMapping("/v1/metric")

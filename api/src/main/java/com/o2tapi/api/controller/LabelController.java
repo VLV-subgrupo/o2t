@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.o2tapi.api.models.Label;
 import com.o2tapi.api.models.User;
+import com.o2tapi.api.pojo.CrossPermission;
 import com.o2tapi.api.pojo.LabelDTO;
 import com.o2tapi.api.service.LabelService;
 import com.o2tapi.api.service.ValidationService;
@@ -26,7 +27,7 @@ import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 
 
-@CrossOrigin
+@CrossOrigin(origins = CrossPermission.allowed_url)
 @Api(value = "LabelController", produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
 @RequestMapping("/v1/labels")
