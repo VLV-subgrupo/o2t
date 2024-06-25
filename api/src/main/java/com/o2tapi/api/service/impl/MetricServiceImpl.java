@@ -11,7 +11,6 @@ import com.o2tapi.api.models.User;
 import com.o2tapi.api.models.enums.MetricType;
 import com.o2tapi.api.pojo.MetricDTO;
 import com.o2tapi.api.repository.MetricRepository;
-import com.o2tapi.api.repository.UserRepository;
 import com.o2tapi.api.service.MetricService;
 
 @Service
