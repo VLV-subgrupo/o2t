@@ -9,9 +9,10 @@ import { handleLogin, handleRegister } from "@/app/_lib/handlers";
 type Prop = {
     className?: string,
     signIn?: boolean
+    changeSign?: () => void
 }
 
-function SignForm({ className, signIn }: Prop) {
+function SignForm({ className, signIn, changeSign}: Prop) {
     const router = useRouter()
     const submitForm = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -32,18 +33,71 @@ function SignForm({ className, signIn }: Prop) {
             }
         }
     }
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [sport, setSport] = useState("");
+    const [errorMsg, setErrorMsg] = useState("")
+
+    const handleUsernameChange = (value: string) => setUsername(value);
+    const handleEmailChange = (value: string) => setEmail(value);
+    const handlePasswordChange = (value: string) => setPassword(value);
+    const handleConfirmPasswordChange = (value: string) => setConfirmPassword(value);
+    const handleSportChange = (value: string) => setSport(value);
+
+    const SendForm = () =>{
+        if (!username) {
+            setErrorMsg("Username is required")
+            return
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setErrorMsg("Invalid email format")
+            return
+        }
+
+        if (password.length < 8) {
+            setErrorMsg("Password must be at least 8 characters")
+            return
+        } else if (!/(?=.*[!@#$%^&*])/.test(password)) {
+            setErrorMsg("Password must contain at least one special character")
+            return
+        }
+
+        if (password !== confirmPassword) {
+            setErrorMsg("Passwords do not match")
+            return
+        }
+
+        if (!sport) {
+            setErrorMsg("Sport is required")
+            return
+        }
+
+        setErrorMsg("")
+        if (!signIn) changeSign?.()
+
+        submitForm({'username': username, 'email': email, 'password': password, 'confirmPassword': confirmPassword, 'sport': sport})
+        //requisiçã, caso erro, mostrar que o email já estpa cadastrado "Email is already registered."
+    }
+
+    const LoginForm = () =>{
+        setErrorMsg("Invalid login or username")
+    }
+
 
     return (
         <form id="form" onSubmit={submitForm} className={cn("flex flex-col items-center gap-4 duration-[1000] transition-all ease-out", className)}>
             <div className="grid gap-4 mb-4">
-                {!signIn && <Input id="username" name="username" />}
-                <Input id="email" name="email" type="email" />
-                <Input id="password" name="password" type="password" />
-                {!signIn && <Input id="confirmPassword" name="confirmPassword" type="password" />}
-                {!signIn && <Input id="sport" name="sport" />}
+                {!signIn && <Input id="username"  name="username" onValueChange={handleUsernameChange}/>}
+                <Input id="email" type="email"  name="email" onValueChange={handleEmailChange}/>
+                <Input id="password"  name="password" type="password" onValueChange={handlePasswordChange}/>
+                {!signIn && <Input id="confirmPassword"  name="confirmPassword" type="password" onValueChange={handleConfirmPasswordChange}/>}
+                {!signIn && <Input id="sport"  name="sport" onValueChange={handleSportChange}/>}
             </div>
-           <CustomButton onClick={ () => document.getElementById('submit')?.click() } text={signIn ? "Login" : "Register"}></CustomButton>
-            <button id='submit' type="submit" hidden={true}></button>
+           <CustomButton  onClick={SendForm } text={signIn ? "Login" : "Register"}></CustomButton>
         </form>
     )
 }
@@ -61,7 +115,7 @@ const ProfileForms = ({signIn = false} : Prop) => {
             <h2 className="text-light text-center">{sign ? "WELCOME BACK" : "LET’S GET STARTED"}</h2>
                 <p className="font-semibold text-lightgray text-center uppercase">{sign ? "don’t have account yet?" : "Already have an account?"} <span className=" underline cursor-pointer hover:text-light duration-300" onClick={() => setTimeout(() => changeSign(), 100)}>{sign ? " Register Here" : " Sign In"}</span></p>
             </DrawerHeader>
-            <SignForm className="px-4" signIn={sign}/>
+            <SignForm className="px-4" signIn={sign} changeSign={changeSign}/>
         </>
 
     );
