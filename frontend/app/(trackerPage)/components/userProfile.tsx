@@ -18,10 +18,11 @@ const UserProfile = () => {
         <form className="flex flex-col items-center justify-between duration-[1000] transition-all ease-out p-16 h-full">
             <div className="flex flex-col justify-between items-start gap-4 w-full">
                 <h4 className="text-light">Personal Information</h4>
-                <div className="flex flex-row justify-between px-8 w-full">
-                    <Input name="username" id="Username" initaialValue={user.name} isRequired={false} isDisabled={true} className=" bg-transparent cursor-not-allowed w-full"/>
-                    <Input name="email" id="E-mail" initaialValue={user.email} isRequired={false} isDisabled={true} className="bg-transparent cursor-not-allowed w-full"/>
-                    <Input name="password" id="New Password" initaialValue="12345678" type="password" isRequired={false} className="bg-transparent w-full"/>
+                <div className="grid grid-cols-2 gap-4 w-full px-8">
+                    <Input name="username" id="Username" initaialValue={user.name} isRequired={false} isDisabled={true} className=" bg-transparent cursor-not-allowed"/>
+                    <Input name="oldpassword" id="Old Password" initaialValue="12345678" type="password" isRequired={false} className="bg-transparent"/>
+                    <Input name="email" id="E-mail" initaialValue={user.email} isRequired={false} isDisabled={true} className="bg-transparent cursor-not-allowed"/>
+                    <Input name="password" id="New Password" initaialValue="12345678" type="password" isRequired={false} className="bg-transparent"/>
                 </div>
             </div>
             <div className="flex flex-col justify-between items-start gap-4 w-full">

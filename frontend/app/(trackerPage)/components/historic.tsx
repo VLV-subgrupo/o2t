@@ -26,6 +26,7 @@ const Historic = () => {
             modifiersClassNames={{
                 outside: 'hidden-day'
             }}
+            fromMonth={new Date(today.getFullYear(), today.getMonth() - 1, )}
             toMonth={new Date(today.getFullYear(), today.getMonth() + 1, 0)}
             selected={date}
             onSelect={setDate}

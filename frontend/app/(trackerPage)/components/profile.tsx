@@ -47,7 +47,7 @@ const Profile = () => {
                         </div>
                     </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="outline-none bg-darkgray text-light text-label w-44 mr-10 p-0 border border-gay">
+                <DropdownMenuContent className="outline-none bg-darkgray text-light text-label w-44 mr-10 p-0 border border-gay ">
                     <DropdownMenuGroup>
                         <DrawerTrigger asChild>
                             <DropdownMenuItem className="group">
@@ -62,7 +62,7 @@ const Profile = () => {
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu>
-            <DrawerContent className="outline-none w-[70%] bg-[#0F0F0F]/70 backdrop-blur-sm border-none place-self-center h-[90%]">
+            <DrawerContent className="outline-none w-[70%] bg-[#0F0F0F]/70 backdrop-blur-sm border-none absolute inset-0 mx-auto">
                 <UserProfile />
             </DrawerContent>
             <DrawerOverlay className="bg-black/50" />
