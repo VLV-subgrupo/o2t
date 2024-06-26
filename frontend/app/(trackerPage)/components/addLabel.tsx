@@ -4,33 +4,29 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/app/_components/ui/po
 import Tags from "./tags";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { handleAddLabel, handleDeleteLabel } from "@/app/_lib/handlers";
 
-const AddLabel = () => {
+type Prop = {
+    userTags: string[][],
+    setUserTags: any,
+    workoutTags: string[][],
+    setWorkoutTags: any,
+}
+
+const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) => {
     const [searchValue, setSearchValue] = useState('')
-    const [userTags, setUserTags] = useState([
-        ['abc', '#FFB3BA'],
-        ['def', '#FFDFBA'],
-        ['jhima', '#BAFFC9'],
-        ['ghima', '#BAE1FF'],
-        ['jakl', '#D4A5A5'],
-        ['mano', '#A5D4D4'],
-        ['pqr', '#D4A5BA'],
-        ['stu', '#A5D4BA'],
-        ['vwamx', '#D4D4A5']]
-    );
     const [filteredTags, setFilteredTags] = useState(userTags);
-    const [workoutTags, setWorkoutTags] = useState<string[][]>([]);
 
     const inputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(event.target.value);
     };
 
-    const filterTags = () => {
+    const filterTags = async () => {
         if (searchValue === '') {
-            setFilteredTags(userTags.filter(tag => !workoutTags.includes(tag)))
+            setFilteredTags(userTags?.filter(tag => !workoutTags.includes(tag)))
         } else {
           const lowerCaseInput = searchValue.toLowerCase();
-          const filtered = userTags.filter(tag => tag[0].toLowerCase().includes(lowerCaseInput));
+          const filtered = userTags?.filter(tag => tag[0].toLowerCase().includes(lowerCaseInput));
           setFilteredTags(filtered);
         }
     };
@@ -49,15 +45,18 @@ const AddLabel = () => {
     }
     const [color, setColor] = useState(generatePastelColor());
 
-    const addTag = () => {
-        setUserTags([...userTags, [searchValue, color]]);
-        addWorkoutTag([searchValue, color])
-        setSearchValue('');
+    const addTag = async () => {
+        try {
+            await handleAddLabel(searchValue, color)
+            addWorkoutTag([searchValue, color])
+            setSearchValue('');
+        } catch (error) {
+            console.log("Error: ", error)
+        }
     };
 
-    const removeTag = (tagToRemove: string) => {
-        setUserTags(userTags.filter(tag => tag[0] !== tagToRemove));
-        setFilteredTags(filteredTags.filter(tag => tag[0] !== tagToRemove));
+    const removeTag = async (tagToRemove: string) => {
+        handleDeleteLabel(tagToRemove).then(labels => setUserTags(labels))
     };
 
     const addWorkoutTag = (tagToAdd: string[]) => {
@@ -65,7 +64,7 @@ const AddLabel = () => {
 
         if (!tagExists){
             setWorkoutTags([...workoutTags, tagToAdd])
-            setFilteredTags(filteredTags.filter(tag => tag[0] !== tagToAdd[0]))
+            setFilteredTags(filteredTags?.filter(tag => tag[0] !== tagToAdd[0]))
         };
     }
 

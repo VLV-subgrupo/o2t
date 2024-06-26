@@ -16,10 +16,11 @@ import { CalendarDays } from "lucide-react"
 
 type Prop = {
     className?: string,
+    date: any,
+    setDate: any,
 }
 
-export function DatePicker({className} : Prop) {
-  const [date, setDate] = React.useState<Date>()
+export function DatePicker({className, date, setDate} : Prop) {
   const today = new Date()
 
   return (

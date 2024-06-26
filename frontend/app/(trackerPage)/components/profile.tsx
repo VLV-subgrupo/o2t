@@ -12,9 +12,22 @@ import {
     DrawerTrigger,
   } from "../../_components/ui/drawer"
 import UserProfile from "./userProfile";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 
 const Profile = () => {
+    const router = useRouter()
+    const userCookie = Cookies.get('user')
+    const user = userCookie ? JSON.parse(userCookie) : null
+    if (!user) {
+        router.push('/')
+    }
+    const logoutUser = () => {
+        Cookies.remove('user')
+        Cookies.remove('token')
+        router.push('/')
+    }
     return (
         <Drawer>
             <DropdownMenu >
@@ -22,10 +35,10 @@ const Profile = () => {
                     <div className="flex flex-row gap-2 items-center select-none">
                         <div className="flex flex-col">
                             <p className="text-p font-medium text-light text-right">
-                                Username
+                                {user.name}
                             </p>
                             <p className="text-label font-semibold text-lightgray text-right">
-                                #2024
+                                #{user.id}
                             </p>
                         </div>
 
@@ -42,7 +55,7 @@ const Profile = () => {
                                 Profile
                             </DropdownMenuItem>
                         </DrawerTrigger>
-                        <DropdownMenuItem className="group">
+                        <DropdownMenuItem onClick={logoutUser} className="group">
                                 <LogOut className="size-4 stroke-light group-focus:ml-2 transition-all ease-smooth duration-300"/>
                                 Logout
                         </DropdownMenuItem>
@@ -54,7 +67,7 @@ const Profile = () => {
             </DrawerContent>
             <DrawerOverlay className="bg-black/50" />
         </Drawer>
-    );
+    )
 }
 
 export default Profile;
