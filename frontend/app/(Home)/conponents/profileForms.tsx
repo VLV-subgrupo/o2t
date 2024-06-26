@@ -4,6 +4,7 @@ import { DrawerHeader} from "@/app/_components/ui/drawer";
 import { cn } from "@/app/_lib/utils";
 import Input from "./input";
 import { ChangeEvent, useEffect, useState } from "react";
+import { handleLogin } from "@/app/_lib/handlers";
 
 
 type Prop = {
@@ -14,15 +15,16 @@ type Prop = {
 function SignForm({ className, signIn }: Prop) {
 
     return (
-        <form className={cn("flex flex-col items-center gap-4 duration-[1000] transition-all ease-out", className)}>
+        <form onSubmit={handleLogin} className={cn("flex flex-col items-center gap-4 duration-[1000] transition-all ease-out", className)}>
             <div className="grid gap-4 mb-4">
-                <Input id="username" />
-                {!signIn && <Input id="email" type="email" />}
-                <Input id="password" type="password" />
-                {!signIn && <Input id="confirmPassword" type="password" />}
-                {!signIn && <Input id="sport" />}
+                {!signIn && <Input id="username" name="username" />}
+                <Input id="email" name="email" type="email" />
+                <Input id="password" name="password" type="password" />
+                {!signIn && <Input id="confirmPassword" name="confirmPassword" type="password" />}
+                {!signIn && <Input id="sport" name="sport" />}
+                <button id="submit" type="submit"></button>
             </div>
-           <CustomButton text={signIn ? "Login" : "Register"}></CustomButton>
+           <CustomButton onClick={ () => document.getElementById("submit")?.click() } text={signIn ? "Login" : "Register"}></CustomButton>
         </form>
     )
 }
