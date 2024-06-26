@@ -63,6 +63,7 @@ const HealthMetrics = () => {
     const [isPaused, setIsPaused] = useState(true)
     const [page, setPage] = useState(1)
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const [retValues, setRetValues] = useState(['0000', '000z0', '000', '0000'])
 
     const scrollToBottom = () => {
         if (scrollContainerRef.current) {
@@ -83,11 +84,37 @@ const HealthMetrics = () => {
         }
     };
 
-      const nextPage = () => {
+    const nextPage = () => {
         if (page < 10) {
-          setPage(prevPage => prevPage + 1);
+            setPage(prevPage => prevPage + 1);
         }
-      };
+    };
+
+    const returnValues = (ret : string, i: number) => {
+        const newRetValues = [...retValues];
+        newRetValues[i] = ret;
+        setRetValues(newRetValues);
+    }
+
+    const submitMetrics = () =>{
+        console.log(retValues)
+
+        // Calcula kg
+        const kg = (parseInt(retValues[0], 10)/10).toFixed(1);
+
+        // Calcula o total de minutos
+        const hours = parseInt(retValues[1].substring(0, 2), 10);
+        const minutes = parseInt(retValues[1].substring(2), 10);
+        const totalMinutes = hours * 60 + minutes;
+
+        // Calcula Hidratação
+        const l = (parseInt(retValues[2], 10)/10).toFixed(1);
+
+        // Calcula Calorias
+        const kcal = parseInt(retValues[3], 10)
+
+        console.log(kg, totalMinutes, l, kcal)
+    }
 
     return (
         <div className="flex-1 flex flex-row gap-4 p-8 pr-0 pt-0 overflow-y-auto ">
@@ -95,7 +122,7 @@ const HealthMetrics = () => {
                 <h5 className="font-semibold">Metrics</h5>
                 <Card className="" title='Weight'>
                     <div className="flex flex-row gap-2 items-center justify-center">
-                        <InputNum length={4} childrenI={2}>
+                        <InputNum metricType={0} ret={returnValues} length={4} childrenI={2}>
                             <div className="size-2 bg-lightgray mt-8 mx-1"></div>
                         </InputNum>
                         <h6 className="text-lightgray select-none mt-8">kg</h6>
@@ -103,7 +130,7 @@ const HealthMetrics = () => {
                 </Card>
                 <Card className="" title='Sleep'>
                     <div className="flex flex-row items-center justify-center">
-                        <InputNum length={4} childrenI={1}>
+                        <InputNum metricType={1} ret={returnValues} length={4} childrenI={1}>
                             <h6 className="text-lightgray select-none mt-8 mx-1">h</h6>
                         </InputNum>
                         <h6 className="text-lightgray select-none mt-8">min</h6>
@@ -111,7 +138,7 @@ const HealthMetrics = () => {
                 </Card>
                 <Card className="" title='Hydration'>
                     <div className="flex flex-row gap-2 items-center justify-center">
-                        <InputNum length={3} childrenI={1}>
+                        <InputNum metricType={2} ret={returnValues} length={3} childrenI={1}>
                             <div className="size-2 bg-lightgray mt-8 mx-1"></div>
                         </InputNum>
                         <h6 className="text-lightgray select-none mt-8">L</h6>
@@ -119,10 +146,11 @@ const HealthMetrics = () => {
                 </Card>
                 <Card className="" title='Calories Burned'>
                     <div className="flex flex-row gap-2 items-center justify-center">
-                        <InputNum length={4}/>
+                        <InputNum metricType={3} ret={returnValues} length={4}/>
                         <h6 className="text-lightgray select-none mt-8">kcal</h6>
                     </div>
                 </Card>
+                <CustomButton onClick={submitMetrics} text='Save' className=""/>
             </div>
             <div className="flex-[3] flex flex-col items-center gap-2">
                 <div className="flex flex-row gap-4 items-center justify-center">
@@ -147,11 +175,11 @@ const HealthMetrics = () => {
                             </TooltipTrigger>
                             {!isPaused &&
                             <TooltipContent side="bottom" className="mt-2 bg-light text-darkgray p-2 border-none">
-                                <p className="label">Pause Timer to Navigate</p>
+                                <p className="label">Conclude Workout to Navigate</p>
                             </TooltipContent>}
                         </Tooltip>
                     </TooltipProvider>
-                    <CustomButton onClick={togglePause} text={isPaused ? 'Start' : 'Pause'} className="absolute bottom-4 backdrop-blur-sm z-40"/>
+                    <CustomButton onClick={togglePause} text={isPaused ? 'Start' : 'Finish'} className="absolute bottom-4 backdrop-blur-sm z-40"/>
                     <div className="size-6 absolute cursor-pointer bottom-6 right-10 z-40 animate-bounce" onClick={scrollToBottom}>
                         <ChevronDown className=" stroke-lightgray stroke-[3px] hover:stroke-light transition-colors duration-200 ease-smooth"/>
                     </div>
@@ -160,7 +188,7 @@ const HealthMetrics = () => {
                     </div>
                 </div>
             </div>
-            <Timer isPaused={isPaused} initialTime={0}></Timer>
+            <Timer isPaused={isPaused}></Timer>
         </div>
     );
 }

@@ -32,7 +32,7 @@ const RadioButton = ({title, selected = false , onSelect} : Prop) =>{
 
 const Dashboard = () => {
     const [graphycType, setGraphycType] = useState('Weight')
-    const [timeGap, setTimeGap] = useState('M')
+    const [timeGap, setTimeGap] = useState('W')
 
     return (
         <div className="flex-1 flex flex-col gap-4">

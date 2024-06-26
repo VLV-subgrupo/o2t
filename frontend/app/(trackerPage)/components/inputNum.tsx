@@ -1,25 +1,31 @@
 "use client"
 
-import { useState, useRef, Fragment } from 'react';
+import { useState, useRef, Fragment, useEffect } from 'react';
 
 type PinInputProps = {
     length?: number;
     childrenI?: number;
     children?: React.ReactElement,
+    ret : (ret : string, i: number) => void,
+    metricType : number
 }
 
-const InputNum = ({length = 1, childrenI, children}: PinInputProps) => {
+const InputNum = ({length = 1, childrenI, children, ret, metricType}: PinInputProps) => {
   const [pin, setPin] = useState(Array(length).fill(' '));
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
+  const [retValues, setRetValues] = useState(pin.map(() => '0'));
 
   const focusInput = (index: number, next: number) => {
     if (index < length - 1) {
         inputsRef.current[index + next]?.focus();
     } else if(index == length - 1 && next <= 0) {
         inputsRef.current[length - 2]?.focus();
-        //inputsRef.current[index]?.blur();
     }
   };
+
+  useEffect(() => {
+    ret(retValues.join(''), metricType)
+  }, [retValues]);
 
   const handleChange = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     const value = e.key;
@@ -30,6 +36,9 @@ const InputNum = ({length = 1, childrenI, children}: PinInputProps) => {
         newPin[index] = ''
         focusInput(index, -1);
         setPin(newPin);
+        const newRetValue = [...retValues];
+        newRetValue[index] = '0';
+        setRetValues(newRetValue)
     } else if (e.key == 'ArrowLeft'){
         focusInput(index, -1);
     } else if (e.key == 'ArrowRight'){
@@ -40,6 +49,9 @@ const InputNum = ({length = 1, childrenI, children}: PinInputProps) => {
         newPin[index] = e.key
         focusInput(index, 1);
         setPin(newPin);
+        const newRetValues = [...retValues];
+        newRetValues[index] = value;
+        setRetValues(newRetValues)
     } else if (e.key == 'Tab') {
         return
     }

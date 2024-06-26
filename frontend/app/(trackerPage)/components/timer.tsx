@@ -5,13 +5,11 @@ import { useEffect, useState } from "react";
 
 type Prop = {
     isPaused: boolean
-    initialTime?: number
-    seconds?: number
 }
 
-const Timer = ({isPaused, initialTime = 0, seconds = 0} : Prop) => {
-    const [times, setTimes] = useState([initialTime - 2, initialTime - 1, initialTime, initialTime + 1, initialTime + 2, initialTime + 3]);
-    const [secondsCounter, setSecondsCounter] = useState(seconds);
+const Timer = ({isPaused,} : Prop) => {
+    const [times, setTimes] = useState([-2,-1,0,1,2,3]);
+    const [secondsCounter, setSecondsCounter] = useState(0);
     const [animationActive, setAnimationActive] = useState(false);
     const [colorChange, setColorChange] = useState("text-light")
 
@@ -22,6 +20,9 @@ const Timer = ({isPaused, initialTime = 0, seconds = 0} : Prop) => {
             }, 1000);
 
             return () => clearInterval(tick);
+        }
+        else {
+            setTimes([-2,-1,0,1,2,3]);
         }
       }, [isPaused]);
 
