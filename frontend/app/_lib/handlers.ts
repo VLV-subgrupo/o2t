@@ -99,6 +99,7 @@ export const handleDeleteLabel = async (name: string) => {
         })
 
         const data: Array<any> = await response.json()
+        let labels: string[][] = []
         data.forEach(async (element: any) => {
             if (element.name === name) {
                 await fetch('http://localhost:8080/v1/labels/' + element.id, {
@@ -107,8 +108,12 @@ export const handleDeleteLabel = async (name: string) => {
                         'Authorization': 'Bearer ' + token,
                     },
                 })
+            } else {
+                labels.push([element.name, element.color])
             }
         })
+
+        return labels
     }
 }
 
@@ -117,9 +122,10 @@ export const handleAddLabel = async (name: string, color: string) => {
     const token = Cookies.get('token')
     if (userCookies) {
         const user = JSON.parse(userCookies)
-        const response = await fetch('http://localhost:8080/v1/labels/', {
+        const response = await fetch('http://localhost:8080/v1/labels', {
             method: 'POST',
             headers: {
+                'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token,
             },
             body: JSON.stringify({
@@ -130,6 +136,57 @@ export const handleAddLabel = async (name: string, color: string) => {
         })
         if (!response.ok) {
             throw new Error("Couldn't add label")
+        }
+    }
+}
+
+export const handleGetIndexesOfLabels = async (labels: string[][]) => {
+    const userCookies = Cookies.get('user')
+    const token = Cookies.get('token')
+    if (userCookies) {
+        const user = JSON.parse(userCookies)
+        const response = await fetch('http://localhost:8080/v1/labels/user/' + user.id, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            },
+        })
+        if (!response.ok) {
+            throw new Error("Couldn't find labels")
+        }
+        const data: Array<any> = await response.json()
+        let ids: number[] = []
+        for (let i = 0; i < labels.length; i++) {
+            data.forEach(element => {
+                if (labels[i][0].localeCompare(element.name)) {
+                    ids.push(element.id)
+                }
+            })
+        }
+        
+        return ids
+    }
+}
+
+export const handleCreateWorkout = async (date: Date, title: string, description: string, createdBy: number, labels: number[]) => {
+    const token = Cookies.get('token')
+    if (token) {
+        const response = await fetch('http://localhost:8080/v1/workouts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify({
+                "registrationDate": date,
+                "title": title,
+                "description": description,
+                "createdById": createdBy,
+                "labelsIds": labels,
+            })
+        })
+        if (!response.ok) {
+            throw Error("Couldn't create workout")
         }
     }
 }

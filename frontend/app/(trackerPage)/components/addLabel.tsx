@@ -3,21 +3,19 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/app/_components/ui/popover";
 import Tags from "./tags";
 import { Trash2 } from "lucide-react";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { handleAddLabel, handleDeleteLabel } from "@/app/_lib/handlers";
 
 type Prop = {
     userTags: string[][],
     setUserTags: any,
+    workoutTags: string[][],
+    setWorkoutTags: any,
 }
 
-const AddLabel = ({userTags, setUserTags}: Prop) => {
+const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) => {
     const [searchValue, setSearchValue] = useState('')
-    
     const [filteredTags, setFilteredTags] = useState(userTags);
-    const [workoutTags, setWorkoutTags] = useState<string[][]>([]);
-
-    
 
     const inputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(event.target.value);
@@ -50,7 +48,6 @@ const AddLabel = ({userTags, setUserTags}: Prop) => {
     const addTag = async () => {
         try {
             await handleAddLabel(searchValue, color)
-            setUserTags([...userTags, [searchValue, color]]);
             addWorkoutTag([searchValue, color])
             setSearchValue('');
         } catch (error) {
@@ -59,8 +56,7 @@ const AddLabel = ({userTags, setUserTags}: Prop) => {
     };
 
     const removeTag = async (tagToRemove: string) => {
-        setUserTags(userTags.filter(tag => tag[0] !== tagToRemove));
-        await handleDeleteLabel(tagToRemove)
+        handleDeleteLabel(tagToRemove).then(labels => setUserTags(labels))
     };
 
     const addWorkoutTag = (tagToAdd: string[]) => {
