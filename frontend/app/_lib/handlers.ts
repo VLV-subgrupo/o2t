@@ -58,3 +58,78 @@ export const handleGetUser = async (email: string) => {
     const data = await response.json()
     Cookies.set('user', JSON.stringify(data), { expires: 7, secure: true })
 }
+
+export const handleGetAllUserLabels = async () => {
+    const userCookies = Cookies.get('user')
+    const token = Cookies.get('token')
+    if (userCookies) {
+        const user = JSON.parse(userCookies)
+        const response = await fetch('http://localhost:8080/v1/labels/user/' + user.id, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            },
+        })
+        if (!response.ok) {
+            throw new Error("Couldn't find labels")
+        }
+
+        let labels: string[][] = []
+        const data: Array<any> = await response.json()
+        data.forEach((element: any) => {
+            let labelName: string = element.name
+            let labelColor: string = element.color
+            labels.push([labelName, labelColor])
+        })
+        
+        return labels
+    }
+}
+
+export const handleDeleteLabel = async (name: string) => {
+    const userCookies = Cookies.get('user')
+    const token = Cookies.get('token')
+    if (userCookies) {
+        const user = JSON.parse(userCookies)
+        let response = await fetch('http://localhost:8080/v1/labels/user/' + user.id, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            },
+        })
+
+        const data: Array<any> = await response.json()
+        data.forEach(async (element: any) => {
+            if (element.name === name) {
+                await fetch('http://localhost:8080/v1/labels/' + element.id, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                    },
+                })
+            }
+        })
+    }
+}
+
+export const handleAddLabel = async (name: string, color: string) => {
+    const userCookies = Cookies.get('user')
+    const token = Cookies.get('token')
+    if (userCookies) {
+        const user = JSON.parse(userCookies)
+        const response = await fetch('http://localhost:8080/v1/labels/', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify({
+                'name': name,
+                'color': color,
+                'createdById': user.id
+            })
+        })
+        if (!response.ok) {
+            throw new Error("Couldn't add label")
+        }
+    }
+}
