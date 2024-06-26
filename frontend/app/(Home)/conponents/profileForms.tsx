@@ -1,11 +1,11 @@
 import CustomButton from "@/app/_components/customButton";
 import { DrawerHeader} from "@/app/_components/ui/drawer";
-
+import Cookies from "js-cookie";
 import { cn } from "@/app/_lib/utils";
 import Input from "./input";
-import { ChangeEvent, useEffect, useState } from "react";
-import { handleLogin } from "@/app/_lib/handlers";
-
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { handleLogin, handleRegister } from "@/app/_lib/handlers";
 
 type Prop = {
     className?: string,
@@ -13,9 +13,31 @@ type Prop = {
 }
 
 function SignForm({ className, signIn }: Prop) {
+    const router = useRouter()
+
+    const submitForm = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        const formData = new FormData(event.currentTarget)
+
+        if (signIn) {
+            try {
+                handleLogin(formData)
+                router.push('/dashboard')
+            } catch (error) {
+                console.log("Error during login: ", error)
+            }
+        } else {
+            try {
+                handleRegister(formData)
+                router.push('/dashboard')
+            } catch (error) {
+                console.log("Error during register: ", error)
+            }   
+        }
+    }
 
     return (
-        <form onSubmit={handleLogin} className={cn("flex flex-col items-center gap-4 duration-[1000] transition-all ease-out", className)}>
+        <form onSubmit={submitForm} className={cn("flex flex-col items-center gap-4 duration-[1000] transition-all ease-out", className)}>
             <div className="grid gap-4 mb-4">
                 {!signIn && <Input id="username" name="username" />}
                 <Input id="email" name="email" type="email" />
