@@ -8,16 +8,19 @@ import { useRouter } from "next/navigation";
 
 const UserProfile = () => {
     const router = useRouter()
-    const userRaw = Cookies.get("user")
-    const user = userRaw === undefined ? null : JSON.parse(userRaw)
+    const userCookie = Cookies.get('user')
+    const user = userCookie ? JSON.parse(userCookie) : null
+    if (!user) {
+        router.push('/')
+    }
 
     return (
         <form className="flex flex-col items-center justify-between duration-[1000] transition-all ease-out p-16 h-full">
             <div className="flex flex-col justify-between items-start gap-4 w-full">
                 <h4 className="text-light">Personal Information</h4>
                 <div className="flex flex-row justify-between px-8 w-full">
-                    <Input name="username" id="Username" initaialValue={user ? user.name : router.push('/')} isRequired={false} isDisabled={true} className=" bg-transparent cursor-not-allowed w-full"/>
-                    <Input name="email" id="E-mail" initaialValue={user ? user.email : router.push('/')} isRequired={false} isDisabled={true} className="bg-transparent cursor-not-allowed w-full"/>
+                    <Input name="username" id="Username" initaialValue={user.name} isRequired={false} isDisabled={true} className=" bg-transparent cursor-not-allowed w-full"/>
+                    <Input name="email" id="E-mail" initaialValue={user.email} isRequired={false} isDisabled={true} className="bg-transparent cursor-not-allowed w-full"/>
                     <Input name="password" id="New Password" initaialValue="12345678" type="password" isRequired={false} className="bg-transparent w-full"/>
                 </div>
             </div>

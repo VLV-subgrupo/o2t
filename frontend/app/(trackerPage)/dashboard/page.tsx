@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Graph from "../components/graph";
 import Historic from "../components/historic";
+import Cookies from "js-cookie"
+import { useRouter } from "next/navigation";
 
 type Prop = {
     title : string,

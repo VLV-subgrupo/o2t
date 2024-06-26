@@ -18,8 +18,11 @@ import { useRouter } from "next/navigation";
 
 const Profile = () => {
     const router = useRouter()
-    const userRaw = Cookies.get("user")
-    const user = userRaw === undefined ? null : JSON.parse(userRaw)
+    const userCookie = Cookies.get('user')
+    const user = userCookie ? JSON.parse(userCookie) : null
+    if (!user) {
+        router.push('/')
+    }
     const logoutUser = () => {
         Cookies.remove('user')
         Cookies.remove('token')
@@ -32,10 +35,10 @@ const Profile = () => {
                     <div className="flex flex-row gap-2 items-center select-none">
                         <div className="flex flex-col">
                             <p className="text-p font-medium text-light text-right">
-                                {user ? user.name : router.push('/')}
+                                {user.name}
                             </p>
                             <p className="text-label font-semibold text-lightgray text-right">
-                                #{user ? user.id : router.push('/')}
+                                #{user.id}
                             </p>
                         </div>
 

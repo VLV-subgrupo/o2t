@@ -1,6 +1,5 @@
 import CustomButton from "@/app/_components/customButton";
 import { DrawerHeader} from "@/app/_components/ui/drawer";
-import Cookies from "js-cookie";
 import { cn } from "@/app/_lib/utils";
 import Input from "./input";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -14,25 +13,23 @@ type Prop = {
 
 function SignForm({ className, signIn }: Prop) {
     const router = useRouter()
-
     const submitForm = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
-
         if (signIn) {
             try {
                 await handleLogin(formData)
                 router.push('/dashboard')
             } catch (error) {
-                console.log("Error during login: ", error)
+                console.log("Login error: ", error)
             }
         } else {
             try {
                 await handleRegister(formData)
                 router.push('/dashboard')
             } catch (error) {
-                console.log("Error during register: ", error)
-            }   
+                console.log("Register error: ", error)
+            }
         }
     }
 

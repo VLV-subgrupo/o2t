@@ -17,7 +17,7 @@ export const handleLogin = async (formData: FormData) => {
     }
     const data = await response.json()
     Cookies.set('token', data.token, { expires: 7, secure: true })
-    handleGetUser(formData.get("email") + '')
+    await handleGetUser(formData.get("email") + '')
 }
 
 export const handleRegister = async (formData: FormData) => {
@@ -37,7 +37,7 @@ export const handleRegister = async (formData: FormData) => {
     if (!response.ok) {
         throw new Error('Register failed')
     }
-    handleLogin(formData)
+    await handleLogin(formData)
 }
 
 export const handleGetUser = async (email: string) => {
