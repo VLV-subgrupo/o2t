@@ -16,7 +16,8 @@ export const handleLogin = async (formData: FormData) => {
         throw new Error('Login failed')
     }
     const data = await response.json()
-    Cookies.set('token', data.token, { expires: 7, secure: true });
+    Cookies.set('token', data.token, { expires: 7, secure: true })
+    handleGetUser(formData.get("email") + '')
 }
 
 export const handleRegister = async (formData: FormData) => {
@@ -41,7 +42,10 @@ export const handleRegister = async (formData: FormData) => {
 
 export const handleGetUser = async (email: string) => {
     const token = Cookies.get('token')
-    const response = await fetch('http://localhost:8080/v1/users/email' + email, {
+    if (token === undefined) {
+        throw new Error('Not Logged In')
+    }
+    const response = await fetch('http://localhost:8080/v1/users/email/' + email, {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + token,
@@ -51,5 +55,6 @@ export const handleGetUser = async (email: string) => {
         throw new Error('Find User by Email failed')
     }
 
-    return response.body
+    const data = await response.json()
+    Cookies.set('user', JSON.stringify(data), { expires: 7, secure: true })
 }

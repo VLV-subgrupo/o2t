@@ -11,8 +11,19 @@ import {
 import ProfileForms from "./conponents/profileForms";
 import Logo from "../_components/o2t_logo";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie"
 
 export default function Home() {
+    const router = useRouter()
+    const userRaw = Cookies.get("user")
+    const token = Cookies.get("token")
+    if (userRaw && token) {
+        router.push('/dashboard')
+    } else {
+        Cookies.remove("user")
+        Cookies.remove("token")
+    }
     const [open, setOpen] = useState(false)
     const [sign, setSign] = useState(false)
 

@@ -15,20 +15,20 @@ type Prop = {
 function SignForm({ className, signIn }: Prop) {
     const router = useRouter()
 
-    const submitForm = (event: FormEvent<HTMLFormElement>) => {
+    const submitForm = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
 
         if (signIn) {
             try {
-                handleLogin(formData)
+                await handleLogin(formData)
                 router.push('/dashboard')
             } catch (error) {
                 console.log("Error during login: ", error)
             }
         } else {
             try {
-                handleRegister(formData)
+                await handleRegister(formData)
                 router.push('/dashboard')
             } catch (error) {
                 console.log("Error during register: ", error)
@@ -37,16 +37,16 @@ function SignForm({ className, signIn }: Prop) {
     }
 
     return (
-        <form onSubmit={submitForm} className={cn("flex flex-col items-center gap-4 duration-[1000] transition-all ease-out", className)}>
+        <form id="form" onSubmit={submitForm} className={cn("flex flex-col items-center gap-4 duration-[1000] transition-all ease-out", className)}>
             <div className="grid gap-4 mb-4">
                 {!signIn && <Input id="username" name="username" />}
                 <Input id="email" name="email" type="email" />
                 <Input id="password" name="password" type="password" />
                 {!signIn && <Input id="confirmPassword" name="confirmPassword" type="password" />}
                 {!signIn && <Input id="sport" name="sport" />}
-                <button id="submit" type="submit"></button>
             </div>
-           <CustomButton onClick={ () => document.getElementById("submit")?.click() } text={signIn ? "Login" : "Register"}></CustomButton>
+           <CustomButton onClick={ () => document.getElementById('submit')?.click() } text={signIn ? "Login" : "Register"}></CustomButton>
+            <button id='submit' type="submit" hidden={true}></button>
         </form>
     )
 }
