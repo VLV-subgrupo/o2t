@@ -32,17 +32,12 @@ const RadioButton = ({title, selected = false , onSelect} : Prop) =>{
 
 const Dashboard = () => {
     const [graphycType, setGraphycType] = useState('Weight')
-    const [timeGap, setTimeGap] = useState('M')
+    const [timeGap, setTimeGap] = useState('W')
 
     return (
         <div className="flex-1 flex flex-col gap-4">
             <div className="flex-grow w-full flex flex-row px-4 gap-4">
                 <div className=" flex flex-col w-full p-4 select-none outline-3 outline outline-transparent hover:outline-gray rounded-lg transition-all duration-300 relative">
-                    <div className="absolute flex flex-row gap-8 self-center mt-[4%] items-center">
-                        <h6 className="text-lightgray flex items-center gap-4">Goal <span className="text-h3 font-bold text-light">120 <span className="text-p font-semibold">min</span></span></h6>
-                        <div className="h-7 w-[2px] bg-gray"></div>
-                        <h6 className="text-lightgray flex items-center gap-4">Average <span className="text-h3 font-bold text-light">120 <span className="text-p font-semibold">min</span></span></h6>
-                    </div>
                     <div className="w-full flex flex-row items-center justify-between px-4">
                         <div className="flex flex-row items-center gap-4 text-light">
                             <h3 className="">Weight</h3>
@@ -56,7 +51,14 @@ const Dashboard = () => {
                             <p onClick={() => setTimeGap('Y')} className={`size-9 transition-all duration-300 hover:text-light grid place-items-center rounded-sm font-semibold cursor-pointer ${timeGap == 'Y' ? "bg-gray text-light" : ""}`}>1 Y</p>
                         </div>
                     </div>
-                    <Graph />
+                    <div className="w-full h-full relative">
+                        <div className="absolute inset-0 mx-auto flex flex-row w-fit h-fit gap-4 justify-center items-center">
+                            <h6 className="text-lightgray flex items-center gap-4">Goal <span className="text-h3 font-bold text-light">120 <span className="text-p font-semibold">min</span></span></h6>
+                            <div className="h-7 w-[2px] bg-gray"></div>
+                            <h6 className="text-lightgray flex items-center gap-4">Average <span className="text-h3 font-bold text-light">120 <span className="text-p font-semibold">min</span></span></h6>
+                        </div>
+                        <Graph />
+                    </div>
                 </div>
                 <div className="flex flex-col justify-between items-center gap-4">
                     <RadioButton title="Weight" selected={graphycType == 'Weight'} onSelect={() => setGraphycType('Weight')}></RadioButton>

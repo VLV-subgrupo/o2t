@@ -86,14 +86,14 @@ const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) =>
                 ))}
             </div>
             <PopoverContent className="bg-back/70 p-2 py-4 flex flex-col gap-1 border-none ml-32 mt-2 backdrop-blur-sm">
-                <input type="text" placeholder="Search tag ..." className="w-full outline-none bg-transparent font-medium label placeholder-light px-2 border-b border-gray pb-3" autoFocus value={searchValue} onChange={inputChange}></input>
+                <input type="text" placeholder="Search tag ..." className=" select-none w-full outline-none bg-transparent font-medium label placeholder-light px-2 border-b border-gray pb-3" autoFocus value={searchValue} onChange={inputChange}></input>
                 <p className="label pl-3 text-lightgray select-none">select a tag or create a new one</p>
                 <div className="max-h-44 overflow-y-scroll pb-4">
                     {filteredTags.length ?
                     ( filteredTags.map((tag, index) => (
-                        <div key={index} className="flex flex-row justify-between items-center hover:bg-darkgray p-3 py-[6px] rounded-sm group transition-all duration-250 easy-smooth cursor-pointer" onClick={() => addWorkoutTag(tag)}>
-                            <Tags name={tag[0]} color={tag[1]}/>
-                            <Trash2 onClick={() => removeTag(tag[0])} className="size-4 opacity-0 group-hover:opacity-100 stroke-gray transition-color duration-300 hover:stroke-red-500"/>
+                        <div key={index} className="flex flex-row justify-between items-center hover:bg-darkgray p-3 py-[6px] rounded-sm group transition-all duration-250 easy-smooth">
+                            <Tags onClick={() => addWorkoutTag(tag)} name={tag[0]} color={tag[1]} className=" cursor-pointer"/>
+                            <Trash2 onClick={() => removeTag(tag[0])}  className="size-4 opacity-0 group-hover:opacity-100 stroke-gray transition-color duration-300 hover:stroke-red-500 cursor-pointer"/>
                         </div>)
                     )) :
                     (<div className="flex flex-row gap-4 bg-darkgray hover:bg-gray/30 items-center p-3 py-[6px] rounded-sm cursor-pointer" onClick={() => addTag()}>

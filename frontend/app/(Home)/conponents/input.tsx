@@ -10,13 +10,15 @@ type Prop = {
     isDisabled    ?:boolean,
     initaialValue ?:string,
     hidden        ?:boolean,
+    onValueChange ?:(value : string) => void
 }
 
-const Input = ({id, name, type = 'text', className, isRequired = true, isDisabled = false, initaialValue = '',hidden = false} : Prop) => {
+const Input = ({id, name, type = 'text', className, isRequired = true, isDisabled = false, initaialValue = '',hidden = false, onValueChange} : Prop) => {
     const [value, setValue] = useState(initaialValue);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
+        if (onValueChange) onValueChange(event.target.value)
     };
 
     return (
