@@ -4,57 +4,29 @@ import CustomButton from "@/app/_components/customButton";
 import Card from "../components/card";
 import InputNum from "../components/inputNum";
 import Timer from "../components/timer";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Tags from "../components/tags";
 import { Button } from "@/app/_components/ui/button";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/app/_components/ui/tooltip";
+import { handleGetAllUserLabels, handleGetAllUserWorkouts } from "@/app/_lib/handlers";
 
-const Content = () => {
+type Prop = {
+    title: string,
+    description: string,
+    labels: any[],
+}
+
+const Content = ({title, description, labels}: Prop) => {
     return(
         <>
-            <h2>Title</h2>
+            <h2>{title}</h2>
             <div className="flex flex-row gap-2 mt-2 mb-8">
-                <Tags name= 'abc' color= '#FFB3BA'/>
-                <Tags name= 'def' color= '#FFDFBA'/>
-                <Tags name= 'jhima' color= '#BAFFC9'/>
-                <Tags name= 'ghima' color= '#BAE1FF'/>
+                {labels.map((label: any) => {
+                    return <Tags name={label.name} color={label.color}/>
+                })}
             </div>
-            <p>
-                orem Ipsum
-                is simply
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                dummy text
-                of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type
-                    and scrambled
-                <br></br>
-                <br></br>
-                it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                the 1960s with the
-                <br></br>
-                <br></br>
-                <br></br>
-                <br></br>
-                release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
-                release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
-            </p>
+            <p>{description}</p>
         </>
     )
 }
@@ -64,7 +36,31 @@ const HealthMetrics = () => {
     const [page, setPage] = useState(1)
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [retValues, setRetValues] = useState(['0000', '000z0', '000', '0000'])
-
+    const today = new Date()
+    const [workouts, setWorkouts] = useState<any[]>([{
+        title: 'No workout',
+        description: 'All done for today!',
+        labels: [],
+    }])
+    
+    useEffect(() => {
+        const getWorkouts = async () => {
+            let workouts: any[] = await handleGetAllUserWorkouts()
+            let todayWorkouts: any[] = []
+            workouts.forEach((element: any) => {
+                let regDate = new Date(element.registrationDate)
+                if (regDate !== today) {
+                    todayWorkouts.push(element)
+                }
+            })
+            if (todayWorkouts.length !== 0) {
+                setWorkouts(todayWorkouts)
+            }
+        }
+        getWorkouts()
+    }, [])
+    
+    
     const scrollToBottom = () => {
         if (scrollContainerRef.current) {
             scrollContainerRef.current.scrollTo({
@@ -85,7 +81,7 @@ const HealthMetrics = () => {
     };
 
     const nextPage = () => {
-        if (page < 10) {
+        if (page < workouts.length) {
             setPage(prevPage => prevPage + 1);
         }
     };
@@ -155,9 +151,7 @@ const HealthMetrics = () => {
             <div className="flex-[3] flex flex-col items-center gap-2">
                 <div className="flex flex-row gap-4 items-center justify-center">
                     <h3 className="font-semibold text-center">Today's Workout</h3>
-                    <p className="label bg-gray w-fit h-fit py-1 px-3 mt-2 rounded-md">
-                            23 apr, 2024
-                    </p>
+                    <p className="label bg-gray w-fit h-fit py-1 px-3 mt-2 rounded-md">{today.toLocaleDateString('pt-BR')}</p>
                 </div>
                 <div className="w-full h-full outline-3 outline outline-transparent hover:outline-gray rounded-lg transition-all duration-300 relative flex flex-col items-center p-4 gap-4 overflow-y-auto">
                     <TooltipProvider delayDuration={100}>
@@ -168,7 +162,7 @@ const HealthMetrics = () => {
                                         <ChevronLeft/>
                                     </Button>
                                     <p className="min-w-10 text-center">{page}</p>
-                                    <Button variant="ghost" disabled={!isPaused || page == 10} onClick={() => {nextPage()}} className={`h-7 w-7 bg-transparent p-0 opacity-100`}>
+                                    <Button variant="ghost" disabled={!isPaused || page == workouts.length} onClick={() => {nextPage()}} className={`h-7 w-7 bg-transparent p-0 opacity-100`}>
                                         <ChevronRight/>
                                     </Button>
                                 </div>
@@ -184,7 +178,7 @@ const HealthMetrics = () => {
                         <ChevronDown className=" stroke-lightgray stroke-[3px] hover:stroke-light transition-colors duration-200 ease-smooth"/>
                     </div>
                     <div ref={scrollContainerRef} className="w-full h-full overflow-y-scroll relative mask-gradient pb-20">
-                        <Content/>
+                        <Content title={workouts[page - 1].title} description={workouts[page - 1].description} labels={workouts[page - 1].labels}/>
                     </div>
                 </div>
             </div>
