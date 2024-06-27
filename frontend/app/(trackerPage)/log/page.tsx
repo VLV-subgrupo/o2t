@@ -26,7 +26,7 @@ const Log = () => {
             setWorkouts(workouts || [])
         }
         getAllUserWorkouts()
-    }, [workouts])
+    }, [])
 
     const cleanAllFields = () => {
         setTitle('')
@@ -38,6 +38,8 @@ const Log = () => {
     const deleteWorkout = async () => {
         if (workoutId !== -1) {
             await handleDeleteWorkout(workoutId)
+            let workouts = await handleGetAllUserWorkouts()
+            setWorkouts(workouts || [])
         }
         cleanAllFields()
     }
@@ -53,6 +55,8 @@ const Log = () => {
             } else {
                 await handleUpdateWorkout(workoutId, registrationDate, title, description, createdBy, labels)
             }
+            let workouts = await handleGetAllUserWorkouts()
+            setWorkouts(workouts || [])
         } else {
             Cookies.remove('user')
             Cookies.remove('token')

@@ -42,7 +42,7 @@ const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) =>
             setUserTags(labels || [])
         }
         getAllUserLabels()
-    })
+    }, [])
 
     const generatePastelColor = (): string => {
         const r = Math.floor((Math.random() * 127) + 127);
