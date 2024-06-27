@@ -233,3 +233,23 @@ export const handleDeleteWorkout = async (id: number) => {
         }
     }
 }
+
+export const handleUpdateTimer = async (id: number, startDate: Date | null, endDate: Date | null) => {
+    const token = Cookies.get('token')
+    if (token) {
+        const response = await fetch('http://localhost:8080/v1/workouts/' + id + '/timer', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify({
+                "registrationDate": startDate,
+                "title": endDate,
+            })
+        })
+        if (!response.ok) {
+            throw Error("Couldn't update workout")
+        }
+    }
+}
