@@ -81,10 +81,6 @@ function SignForm({ className, signIn, changeSign}: Prop) {
         //requisiçã, caso erro, mostrar que o email já estpa cadastrado "Email is already registered."
     }
 
-    const LoginForm = () =>{
-        setErrorMsg("Invalid login or username")
-    }
-
 
     return (
         <form id="form" className={cn("flex flex-col items-center gap-4 duration-[1000] transition-all ease-out", className)}>

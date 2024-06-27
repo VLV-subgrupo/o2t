@@ -6,6 +6,7 @@ import Card from "./card";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { handleUpdatePassword } from "@/app/_lib/handlers";
 
 const UserProfile = () => {
     const router = useRouter()
@@ -16,11 +17,24 @@ const UserProfile = () => {
     }
 
     const [retValues, setRetValues] = useState(['0000', '0000', '000', '0000'])
+    const [newPassword, setNewPassword] = useState('')
+    const [oldPassword, setOldPassword] = useState('')
+
+    const handleNewPasswordChange = (value: string) => setNewPassword(value);
+    const handleOldPasswordChange = (value: string) => setOldPassword(value);
 
     const returnValues = (ret : string, i: number) => {
         const newRetValues = [...retValues];
         newRetValues[i] = ret;
         setRetValues(newRetValues);
+    }
+
+    const changePassword = async () => {
+        try {
+            await handleUpdatePassword(oldPassword, newPassword)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const submitMetrics = () =>{
@@ -49,9 +63,9 @@ const UserProfile = () => {
                 <h4 className="text-light">Personal Information</h4>
                 <div className="grid grid-cols-2 gap-4 w-full px-8">
                     <Input name="username" id="Username" initaialValue={user ? user.name : router.push('/')} isRequired={false} isDisabled={true} className=" bg-transparent cursor-not-allowed"/>
-                    <Input name="oldpassword" id="Old Password" initaialValue="12345678" type="password" isRequired={false} className="bg-transparent"/>
+                    <Input name="oldpassword" id="Old Password" onValueChange={handleOldPasswordChange} type="password" isRequired={false} className="bg-transparent"/>
                     <Input name="email" id="E-mail" initaialValue={user ? user.email : router.push('/')} isRequired={false} isDisabled={true} className="bg-transparent cursor-not-allowed"/>
-                    <Input name="password" id="New Password" initaialValue="12345678" type="password" isRequired={false} className="bg-transparent"/>
+                    <Input name="password" id="New Password" onValueChange={handleNewPasswordChange} type="password" isRequired={false} className="bg-transparent"/>
                 </div>
             </div>
             <div className="flex flex-col justify-between items-start gap-4 w-full">
@@ -90,7 +104,7 @@ const UserProfile = () => {
                 </div>
 
             </div>
-           <CustomButton text={"Save"}></CustomButton>
+           <CustomButton onClick={changePassword} text={"Save"}></CustomButton>
         </form>
     )
 }
