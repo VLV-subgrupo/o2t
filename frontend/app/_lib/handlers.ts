@@ -1,14 +1,14 @@
 import Cookies from "js-cookie";
 
-export const handleLogin = async (formData: FormData) => {
+export const handleLogin = async (email: string, password: string) => {
     const response = await fetch('http://localhost:8080/v1/auth/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            email: formData.get("email"),
-            password: formData.get("password"),
+            email: email,
+            password: password,
         })
     })
 
@@ -17,27 +17,27 @@ export const handleLogin = async (formData: FormData) => {
     }
     const data = await response.json()
     Cookies.set('token', data.token, { expires: 7, secure: true })
-    await handleGetUser(formData.get("email") + '')
+    await handleGetUser(email + '')
 }
 
-export const handleRegister = async (formData: FormData) => {
+export const handleRegister = async (username: string, email: string, password: string, sport: string) => {
     const response = await fetch('http://localhost:8080/v1/auth/start', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            name: formData.get("username"),
-            email: formData.get("email"),
-            password: formData.get("password"),
-            sport: formData.get("sport")
+            name: username,
+            email: email,
+            password: password,
+            sport: sport,
         })
     })
 
     if (!response.ok) {
         throw new Error('Register failed')
     }
-    await handleLogin(formData)
+    await handleLogin(email, password)
 }
 
 export const handleGetUser = async (email: string) => {
