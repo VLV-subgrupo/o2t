@@ -13,21 +13,25 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/app/
 const Log = () => {
     const [date, setDate] = useState<Date>()
     const [userTags, setUserTags] = useState<string[][]>([])
-    const [workoutTags, setWorkoutTags] = useState<string[][]>([]);
+    const [workoutTags, setWorkoutTags] = useState<string[][]>([])
+    const [title, setTitle] = useState('')
+    const [description, setDescription] = useState('')
 
     useEffect(() => {
-        handleGetAllUserLabels().then(labels => setUserTags(labels || []))
-    })
+        const getAllUserLabels = async () => {
+            let labels = await handleGetAllUserLabels()
+            setUserTags(labels || [])
+        }
+        getAllUserLabels()
+    }, [])
 
     const submitWorkout = async () => {
         const userCookie = Cookies.get('user')
         if (userCookie) {
             const user = JSON.parse(userCookie)
             const registrationDate = date!
-            const title = document.getElementById("workoutTitle")!.innerText
-            const description = document.getElementById("workoutDescription")!.innerText
             const createdBy = user.id
-            const labels = await handleGetIndexesOfLabels(workoutTags) || []
+            const labels = workoutTags.map(tag => parseInt(tag[2]))
 
             await handleCreateWorkout(registrationDate, title, description, createdBy, labels)
         } else {
@@ -45,7 +49,7 @@ const Log = () => {
                         <TooltipProvider delayDuration={100}>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <div className="size-[42px] rounded-full bg-gray cursor-pointer group -mr-1 border-[2px] border-darkgray grid place-items-center hover:bg-lightgray transition-colors duration-300">
+                                    <div onClick={submitWorkout} className="size-[42px] rounded-full bg-gray cursor-pointer group -mr-1 border-[2px] border-darkgray grid place-items-center hover:bg-lightgray transition-colors duration-300">
                                         <Plus className="size-4 stroke-lightgray group-hover:stroke-darkgray"/>
                                     </div>
                                 </TooltipTrigger>
@@ -81,9 +85,9 @@ const Log = () => {
                     </div>
                     <DatePicker date={date} setDate={setDate} className="w-full justify-start text-left font-semibold text-p bg-transparent"></DatePicker>
                 </div>
-                <input id="workoutTitle" type="text" placeholder="Workout Title" className="bg-transparent outline-none w-full text-h4 font-bold placeholder-lightgray px-4 uppercase"></input>
+                <input value={title} onChange={e => setTitle(e.target.value)} type="text" placeholder="Workout Title" className="bg-transparent outline-none w-full text-h4 font-bold placeholder-lightgray px-4 uppercase"></input>
                 <AddLabel userTags={userTags} setUserTags={setUserTags} workoutTags={workoutTags} setWorkoutTags={setWorkoutTags} />
-                <textarea id="workoutDescription" placeholder="Workout Description" className="bg-transparent outline-none w-full h-full text-p font-bold placeholder-lightgray border border-gray rounded-lg p-4 resize-none"></textarea>
+                <textarea value={description} onChange={e => setDescription(e.target.value)} id="workoutDescription" placeholder="Workout Description" className="bg-transparent outline-none w-full h-full text-p font-bold placeholder-lightgray border border-gray rounded-lg p-4 resize-none"></textarea>
             </div>
             <ScrollableList />
         </div>

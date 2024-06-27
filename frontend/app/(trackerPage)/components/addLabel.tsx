@@ -4,7 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/app/_components/ui/po
 import Tags from "./tags";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { handleAddLabel, handleDeleteLabel } from "@/app/_lib/handlers";
+import { handleAddLabel, handleDeleteLabel, handleGetAllUserLabels } from "@/app/_lib/handlers";
 
 type Prop = {
     userTags: string[][],
@@ -21,13 +21,13 @@ const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) =>
         setSearchValue(event.target.value);
     };
 
-    const filterTags = async () => {
+    const filterTags = () => {
         if (searchValue === '') {
             setFilteredTags(userTags?.filter(tag => !workoutTags.includes(tag)))
         } else {
           const lowerCaseInput = searchValue.toLowerCase();
           const filtered = userTags?.filter(tag => tag[0].toLowerCase().includes(lowerCaseInput));
-          setFilteredTags(filtered);
+          setFilteredTags(filtered.filter(tag => !workoutTags.includes(tag)));
         }
     };
 
@@ -47,8 +47,9 @@ const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) =>
 
     const addTag = async () => {
         try {
-            await handleAddLabel(searchValue, color)
-            addWorkoutTag([searchValue, color])
+            let id = await handleAddLabel(searchValue, color)
+            addWorkoutTag([searchValue, color, id])
+            setUserTags([...userTags, [searchValue, color, id]])
             setSearchValue('');
         } catch (error) {
             console.log("Error: ", error)
@@ -56,10 +57,14 @@ const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) =>
     };
 
     const removeTag = async (tagToRemove: string) => {
-        handleDeleteLabel(tagToRemove).then(labels => setUserTags(labels))
+        await handleDeleteLabel(tagToRemove)
+        setWorkoutTags(workoutTags.filter(tag => tag[0] !== tagToRemove))
+        let labels = await handleGetAllUserLabels()
+        setUserTags(labels)
+        filterTags()
     };
 
-    const addWorkoutTag = (tagToAdd: string[]) => {
+    const addWorkoutTag = async (tagToAdd: string[]) => {
         const tagExists = workoutTags.some(([tag]) => tag === tagToAdd[0]);
 
         if (!tagExists){
@@ -69,8 +74,8 @@ const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) =>
     }
 
     const removeWorkoutTag = (tagToRemove: string[]) => {
-        setWorkoutTags(workoutTags.filter(tag => tag[0] !== tagToRemove[0]));
-        setFilteredTags([...filteredTags, tagToRemove])
+        setWorkoutTags(workoutTags.filter(tag => tag[0] !== tagToRemove[0]))
+        filterTags()
     };
 
     return (
@@ -93,7 +98,7 @@ const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) =>
                     ( filteredTags.map((tag, index) => (
                         <div key={index} className="flex flex-row justify-between items-center hover:bg-darkgray p-3 py-[6px] rounded-sm group transition-all duration-250 easy-smooth">
                             <Tags onClick={() => addWorkoutTag(tag)} name={tag[0]} color={tag[1]} className=" cursor-pointer"/>
-                            <Trash2 onClick={() => removeTag(tag[0])}  className="size-4 opacity-0 group-hover:opacity-100 stroke-gray transition-color duration-300 hover:stroke-red-500 cursor-pointer"/>
+                            <Trash2 onClick={() => removeTag(tag[2])}  className="size-4 opacity-0 group-hover:opacity-100 stroke-gray transition-color duration-300 hover:stroke-red-500 cursor-pointer"/>
                         </div>)
                     )) :
                     (<div className="flex flex-row gap-4 bg-darkgray hover:bg-gray/30 items-center p-3 py-[6px] rounded-sm cursor-pointer" onClick={() => addTag()}>

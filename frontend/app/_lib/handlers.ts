@@ -79,41 +79,28 @@ export const handleGetAllUserLabels = async () => {
         data.forEach((element: any) => {
             let labelName: string = element.name
             let labelColor: string = element.color
-            labels.push([labelName, labelColor])
+            let labelId: string = element.id
+            labels.push([labelName, labelColor, labelId])
         })
         
         return labels
     }
 }
 
-export const handleDeleteLabel = async (name: string) => {
+export const handleDeleteLabel = async (id: string) => {
     const userCookies = Cookies.get('user')
     const token = Cookies.get('token')
     if (userCookies) {
         const user = JSON.parse(userCookies)
-        let response = await fetch('http://localhost:8080/v1/labels/user/' + user.id, {
-            method: 'GET',
+        const response = await fetch('http://localhost:8080/v1/labels/' + id, {
+            method: 'DELETE',
             headers: {
                 'Authorization': 'Bearer ' + token,
             },
         })
-
-        const data: Array<any> = await response.json()
-        let labels: string[][] = []
-        data.forEach(async (element: any) => {
-            if (element.name === name) {
-                await fetch('http://localhost:8080/v1/labels/' + element.id, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': 'Bearer ' + token,
-                    },
-                })
-            } else {
-                labels.push([element.name, element.color])
-            }
-        })
-
-        return labels
+        if (!response.ok) {
+            throw new Error("Couldn't delete label")
+        }
     }
 }
 
@@ -137,6 +124,10 @@ export const handleAddLabel = async (name: string, color: string) => {
         if (!response.ok) {
             throw new Error("Couldn't add label")
         }
+
+        const data = await response.json()
+
+        return data.id
     }
 }
 
@@ -187,6 +178,64 @@ export const handleCreateWorkout = async (date: Date, title: string, description
         })
         if (!response.ok) {
             throw Error("Couldn't create workout")
+        }
+    }
+}
+
+export const handleGetAllUserWorkouts = async () => {
+    const token = Cookies.get('token')
+    const userCookies = Cookies.get('user')
+    if (userCookies) {
+        const user = JSON.parse(userCookies)
+        const response = await fetch('http://localhost:8080/v1/workouts/user/' + user.id, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            }
+        })
+        if (!response.ok) {
+            throw Error("Couldn't get workouts")
+        }
+        const data = await response.json()
+
+        return data
+    }
+}
+
+export const handleUpdateWorkout = async (id: number, date: Date, title: string, description: string, createdBy: number, labels: number[]) => {
+    const token = Cookies.get('token')
+    if (token) {
+        const response = await fetch('http://localhost:8080/v1/workouts/' + id + '/update', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify({
+                "registrationDate": date,
+                "title": title,
+                "description": description,
+                "createdById": createdBy,
+                "labelsIds": labels,
+            })
+        })
+        if (!response.ok) {
+            throw Error("Couldn't update workout")
+        }
+    }
+}
+
+export const handleDeleteWorkout = async (id: number) => {
+    const token = Cookies.get('token')
+    if (token) {
+        const response = await fetch('http://localhost:8080/v1/workouts/' + id, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            }
+        })
+        if (!response.ok) {
+            throw Error("Couldn't delete workout")
         }
     }
 }
