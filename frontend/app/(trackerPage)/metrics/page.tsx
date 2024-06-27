@@ -49,7 +49,7 @@ const HealthMetrics = () => {
             let todayWorkouts: any[] = []
             workouts.forEach((element: any) => {
                 let regDate = new Date(element.registrationDate)
-                if (regDate !== today) {
+                if (regDate.toLocaleDateString('pt-BR') === today.toLocaleDateString('pt-BR')) {
                     todayWorkouts.push(element)
                 }
             })
