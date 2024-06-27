@@ -1,7 +1,21 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ListItem from "./listItem";
+
+type Prop = {
+    workoutTags: string[][],
+    setWorkoutTags: any,
+    workouts: any[],
+    setWorkouts: any,
+    title: string,
+    setTitle: any,
+    description: string,
+    setDescription: any,
+    date: Date | undefined,
+    setDate: any,
+    setWorkoutId: any,
+}
 
 function throttle(func: (...args: any[]) => void, limit: number) {
     let inThrottle: boolean;
@@ -14,7 +28,7 @@ function throttle(func: (...args: any[]) => void, limit: number) {
     };
   }
 
-const ScrollableList = () => {
+const ScrollableList = ({workoutTags, setWorkoutTags, workouts, setWorkouts, title, setTitle, description, setDescription, date, setDate, setWorkoutId}:Prop) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -28,6 +42,7 @@ const ScrollableList = () => {
 
     const selectItem = (index: number) => {
         setSelectedIndex(index);
+        fillWorkoutFieldsWithCurrent(workouts[index])
     };
 
     const selectyByArrow = (event: KeyboardEvent) => {
@@ -42,6 +57,31 @@ const ScrollableList = () => {
             setSelectedIndex(prevIndex => Math.max(prevIndex - 1, 0))
         else
             setSelectedIndex(prevIndex => Math.min(prevIndex + 1, 19)) //FIXME - this is not mudar o maximo
+    }
+
+    const getWorkoutLabels = (workout: any) => {
+        let result: any[] = []
+        for (let i = 0; i < workout.labels.length; i++) {
+            result.push(workout.labels[i].name)
+        }
+        return result
+    }
+
+    const fillWorkoutFieldsWithCurrent = (current: any) => {
+        setWorkoutId(current.id)
+        setTitle(current.title)
+        setDescription(current.description)
+        setDate(current.registrationDate)
+        let result: any[] = []
+        for (let i = 0; i < current.labels.length; i++) {
+            result.push([current.labels[i].name, current.labels[i].color, current.labels[i].id])
+        }
+        setWorkoutTags(result)
+    }
+
+    const formatDate = (date: string) => {
+        let obj = new Date(date)
+        return obj.toLocaleDateString("pt-BR")
     }
 
     useEffect(() => {
@@ -61,19 +101,17 @@ const ScrollableList = () => {
         };
     }, []);
 
-    const items = Array.from({ length: 20 }, (_, index) => `Item ${index + 1}`);
-
     return (
         <div className="py-[20%] pb-[5%] h-full overflow-hidden" ref={containerRef}>
-            {items.map((item, index) => (
+            {workouts.map((workout, index) => (
                 <div
-                    key={index}
+                    key={workout.id}
                     ref={(input) => {
                         itemsRef.current[index] = input;
                     }}
                     onClick={() => selectItem(index)}
                 >
-                    <ListItem key={index} selected={selectedIndex === index} title="teste" date="13/03" tags={["teste", "test2"]}/>
+                    <ListItem key={index} selected={selectedIndex === index} title={workout.title} date={formatDate(workout.registrationDate)} tags={getWorkoutLabels(workout)}/>
                 </div>
             ))}
         </div>

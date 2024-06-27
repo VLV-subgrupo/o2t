@@ -7,7 +7,7 @@ import AddLabel from "../components/addLabel";
 import Cookies from "js-cookie"
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { handleCreateWorkout, handleGetAllUserLabels, handleGetIndexesOfLabels } from "@/app/_lib/handlers";
+import { handleCreateWorkout, handleDeleteWorkout, handleGetAllUserLabels, handleGetAllUserWorkouts, handleUpdateWorkout } from "@/app/_lib/handlers";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/app/_components/ui/tooltip";
 
 const Log = () => {
@@ -16,15 +16,31 @@ const Log = () => {
     const [workoutTags, setWorkoutTags] = useState<string[][]>([])
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
+    const [workouts, setWorkouts] = useState([])
+    const [workoutId, setWorkoutId] = useState(-1)
 
     useEffect(() => {
-        const getAllUserLabels = async () => {
-            let labels = await handleGetAllUserLabels()
-            setUserTags(labels || [])
+        
+        const getAllUserWorkouts = async () => {
+            let workouts = await handleGetAllUserWorkouts()
+            setWorkouts(workouts || [])
         }
-        getAllUserLabels()
-    }, [])
+        getAllUserWorkouts()
+    }, [workouts])
 
+    const cleanAllFields = () => {
+        setTitle('')
+        setDescription('')
+        setDate(new Date(Date.now()))
+        setWorkoutTags([])
+        setWorkoutId(-1)
+    }
+    const deleteWorkout = async () => {
+        if (workoutId !== -1) {
+            await handleDeleteWorkout(workoutId)
+        }
+        cleanAllFields()
+    }
     const submitWorkout = async () => {
         const userCookie = Cookies.get('user')
         if (userCookie) {
@@ -32,8 +48,11 @@ const Log = () => {
             const registrationDate = date!
             const createdBy = user.id
             const labels = workoutTags.map(tag => parseInt(tag[2]))
-
-            await handleCreateWorkout(registrationDate, title, description, createdBy, labels)
+            if (workoutId === -1) {
+                await handleCreateWorkout(registrationDate, title, description, createdBy, labels)
+            } else {
+                await handleUpdateWorkout(workoutId, registrationDate, title, description, createdBy, labels)
+            }
         } else {
             Cookies.remove('user')
             Cookies.remove('token')
@@ -49,7 +68,7 @@ const Log = () => {
                         <TooltipProvider delayDuration={100}>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <div onClick={submitWorkout} className="size-[42px] rounded-full bg-gray cursor-pointer group -mr-1 border-[2px] border-darkgray grid place-items-center hover:bg-lightgray transition-colors duration-300">
+                                    <div onClick={cleanAllFields} className="size-[42px] rounded-full bg-gray cursor-pointer group -mr-1 border-[2px] border-darkgray grid place-items-center hover:bg-lightgray transition-colors duration-300">
                                         <Plus className="size-4 stroke-lightgray group-hover:stroke-darkgray"/>
                                     </div>
                                 </TooltipTrigger>
@@ -61,7 +80,7 @@ const Log = () => {
                         <TooltipProvider delayDuration={100}>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <div className="size-[42px] rounded-full bg-gray cursor-pointer group -mr-1 border-[2px] border-darkgray grid place-items-center hover:bg-lightgray transition-colors duration-300">
+                                    <div onClick={submitWorkout} className="size-[42px] rounded-full bg-gray cursor-pointer group -mr-1 border-[2px] border-darkgray grid place-items-center hover:bg-lightgray transition-colors duration-300">
                                         <Save className="size-4 stroke-lightgray group-hover:stroke-darkgray"/>
                                     </div>
                                 </TooltipTrigger>
@@ -73,7 +92,7 @@ const Log = () => {
                         <TooltipProvider delayDuration={100}>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <div className="size-[42px] rounded-full bg-gray cursor-pointer group -mr-1 border-[2px] border-darkgray grid place-items-center hover:bg-lightgray transition-colors duration-300">
+                                    <div onClick={deleteWorkout} className="size-[42px] rounded-full bg-gray cursor-pointer group -mr-1 border-[2px] border-darkgray grid place-items-center hover:bg-lightgray transition-colors duration-300">
                                         <Trash2 className="size-4 stroke-lightgray group-hover:stroke-darkgray"/>
                                     </div>
                                     </TooltipTrigger>
@@ -89,7 +108,7 @@ const Log = () => {
                 <AddLabel userTags={userTags} setUserTags={setUserTags} workoutTags={workoutTags} setWorkoutTags={setWorkoutTags} />
                 <textarea value={description} onChange={e => setDescription(e.target.value)} id="workoutDescription" placeholder="Workout Description" className="bg-transparent outline-none w-full h-full text-p font-bold placeholder-lightgray border border-gray rounded-lg p-4 resize-none"></textarea>
             </div>
-            <ScrollableList />
+            <ScrollableList workouts={workouts} setWorkouts={setWorkouts} workoutTags={workoutTags} setWorkoutTags={setWorkoutTags} title={title} setTitle={setTitle} description={description} setDescription={setDescription} date={date} setDate={setDate} setWorkoutId={setWorkoutId} />
         </div>
     );
 }

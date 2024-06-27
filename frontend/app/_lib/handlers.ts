@@ -59,6 +59,28 @@ export const handleGetUser = async (email: string) => {
     Cookies.set('user', JSON.stringify(data), { expires: 7, secure: true })
 }
 
+export const handleUpdatePassword = async (oldPassword: string, newPassword: string) => {
+    const token = Cookies.get('token')
+    const userCookies = Cookies.get('user')
+    if (userCookies && token) {
+        const user = JSON.parse(userCookies)
+        const response  = await fetch('http://localhost:8080/v1/users/' + user.id + '/password', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify({
+                'previousPassword': oldPassword,
+                'newPassword': newPassword,
+            })
+        })
+        if (!response.ok) {
+            throw Error("Couldn't change password")
+        }
+    }
+}
+
 export const handleGetAllUserLabels = async () => {
     const userCookies = Cookies.get('user')
     const token = Cookies.get('token')
@@ -131,34 +153,6 @@ export const handleAddLabel = async (name: string, color: string) => {
     }
 }
 
-export const handleGetIndexesOfLabels = async (labels: string[][]) => {
-    const userCookies = Cookies.get('user')
-    const token = Cookies.get('token')
-    if (userCookies) {
-        const user = JSON.parse(userCookies)
-        const response = await fetch('http://localhost:8080/v1/labels/user/' + user.id, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-            },
-        })
-        if (!response.ok) {
-            throw new Error("Couldn't find labels")
-        }
-        const data: Array<any> = await response.json()
-        let ids: number[] = []
-        for (let i = 0; i < labels.length; i++) {
-            data.forEach(element => {
-                if (labels[i][0].localeCompare(element.name)) {
-                    ids.push(element.id)
-                }
-            })
-        }
-        
-        return ids
-    }
-}
-
 export const handleCreateWorkout = async (date: Date, title: string, description: string, createdBy: number, labels: number[]) => {
     const token = Cookies.get('token')
     if (token) {
@@ -191,7 +185,7 @@ export const handleGetAllUserWorkouts = async () => {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token,
-            }
+            },
         })
         if (!response.ok) {
             throw Error("Couldn't get workouts")

@@ -14,7 +14,7 @@ type Prop = {
 }
 
 const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) => {
-    const [searchValue, setSearchValue] = useState('')
+    const [searchValue, setSearchValue] = useState(' ')
     const [filteredTags, setFilteredTags] = useState(userTags);
 
     const inputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +23,7 @@ const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) =>
 
     const filterTags = () => {
         if (searchValue === '') {
-            setFilteredTags(userTags?.filter(tag => !workoutTags.includes(tag)))
+            setFilteredTags(userTags)
         } else {
           const lowerCaseInput = searchValue.toLowerCase();
           const filtered = userTags?.filter(tag => tag[0].toLowerCase().includes(lowerCaseInput));
@@ -34,7 +34,15 @@ const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) =>
     useEffect(() => {
         filterTags();
         if (searchValue === '') setColor(generatePastelColor());
-    }, [searchValue]);
+    }, [searchValue, userTags]);
+
+    useEffect(() => {
+        const getAllUserLabels = async () => {
+            let labels = await handleGetAllUserLabels()
+            setUserTags(labels || [])
+        }
+        getAllUserLabels()
+    })
 
     const generatePastelColor = (): string => {
         const r = Math.floor((Math.random() * 127) + 127);
@@ -58,10 +66,8 @@ const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) =>
 
     const removeTag = async (tagToRemove: string) => {
         await handleDeleteLabel(tagToRemove)
-        setWorkoutTags(workoutTags.filter(tag => tag[0] !== tagToRemove))
-        let labels = await handleGetAllUserLabels()
-        setUserTags(labels)
-        filterTags()
+        setUserTags(userTags.filter(tag => tag[2] !== tagToRemove))
+        setWorkoutTags(workoutTags.filter(tag => tag[2] !== tagToRemove))
     };
 
     const addWorkoutTag = async (tagToAdd: string[]) => {
@@ -73,8 +79,8 @@ const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) =>
         };
     }
 
-    const removeWorkoutTag = (tagToRemove: string[]) => {
-        setWorkoutTags(workoutTags.filter(tag => tag[0] !== tagToRemove[0]))
+    const removeWorkoutTag = (tagToRemove: string) => {
+        setWorkoutTags(workoutTags.filter(tag => tag[0] !== tagToRemove))
         filterTags()
     };
 
@@ -82,12 +88,12 @@ const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) =>
         <Popover>
             <div className="flex flex-row gap-4 px-4 w-full flex-wrap">
                 <PopoverTrigger asChild>
-                    <button className="bg-gray px-4 rounded-full w-fit h-[24px] hover:bg-lightgray transition-colors duration-300 group">
+                    <button onClick={() => setSearchValue('')} className="bg-gray px-4 rounded-full w-fit h-[24px] hover:bg-lightgray transition-colors duration-300 group">
                         <p className="label text-lightgray group-hover:text-darkgray">+ add label</p>
                     </button>
                 </PopoverTrigger>
                 {workoutTags.map((tag, index) => (
-                    <Tags className="cursor-pointer" onClick={() => removeWorkoutTag(tag)} key={index} name={tag[0]} color={tag[1]}/>
+                    <Tags className="cursor-pointer" onClick={() => removeWorkoutTag(tag[0])} key={index} name={tag[0]} color={tag[1]}/>
                 ))}
             </div>
             <PopoverContent className="bg-back/70 p-2 py-4 flex flex-col gap-1 border-none ml-32 mt-2 backdrop-blur-sm">
