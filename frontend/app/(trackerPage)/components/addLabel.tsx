@@ -34,7 +34,7 @@ const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) =>
     useEffect(() => {
         filterTags();
         if (searchValue === '') setColor(generatePastelColor());
-    }, [searchValue, userTags]);
+    }, [searchValue]);
 
     useEffect(() => {
         const getAllUserLabels = async () => {
@@ -65,9 +65,14 @@ const AddLabel = ({userTags, setUserTags, workoutTags, setWorkoutTags}: Prop) =>
     };
 
     const removeTag = async (tagToRemove: string) => {
-        await handleDeleteLabel(tagToRemove)
-        setUserTags(userTags.filter(tag => tag[2] !== tagToRemove))
-        setWorkoutTags(workoutTags.filter(tag => tag[2] !== tagToRemove))
+        try {
+            await handleDeleteLabel(tagToRemove)
+            setUserTags(userTags.filter(tag => tag[2] !== tagToRemove))
+            setWorkoutTags(workoutTags.filter(tag => tag[2] !== tagToRemove))
+            setFilteredTags(filteredTags.filter(tag => tag[2] !== tagToRemove))
+        } catch (error) {
+            console.log("Not deletable")
+        }
     };
 
     const addWorkoutTag = async (tagToAdd: string[]) => {

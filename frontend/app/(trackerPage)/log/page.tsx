@@ -11,7 +11,7 @@ import { handleCreateWorkout, handleDeleteWorkout, handleGetAllUserLabels, handl
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/app/_components/ui/tooltip";
 
 const Log = () => {
-    const [date, setDate] = useState<Date>()
+    const [date, setDate] = useState<Date>(new Date(Date.now()))
     const [userTags, setUserTags] = useState<string[][]>([])
     const [workoutTags, setWorkoutTags] = useState<string[][]>([])
     const [title, setTitle] = useState('')
