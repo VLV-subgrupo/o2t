@@ -14,22 +14,20 @@ type Prop = {
 
 function SignForm({ className, signIn, changeSign}: Prop) {
     const router = useRouter()
-    const submitForm = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        const formData = new FormData(event.currentTarget)
+    const submitForm = async (username: string, email: string, password: string, confirmPassword: string, sport: string) => {
         if (signIn) {
             try {
-                await handleLogin(formData)
+                await handleLogin(email, password)
                 router.push('/dashboard')
             } catch (error) {
-                console.log("Login error: ", error)
+                setErrorMsg('Something went wrong. Try again.')
             }
         } else {
             try {
-                await handleRegister(formData)
+                await handleRegister(username, email, password, sport)
                 router.push('/dashboard')
             } catch (error) {
-                console.log("Register error: ", error)
+                setErrorMsg('Something went wrong. Try again.')
             }
         }
     }
@@ -46,40 +44,40 @@ function SignForm({ className, signIn, changeSign}: Prop) {
     const handleConfirmPasswordChange = (value: string) => setConfirmPassword(value);
     const handleSportChange = (value: string) => setSport(value);
 
-    const SendForm = () =>{
-        if (!username) {
+    const SendForm = async () =>{
+        if (!signIn && !username) {
             setErrorMsg("Username is required")
             return
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
+        if (!signIn && !emailRegex.test(email)) {
             setErrorMsg("Invalid email format")
             return
         }
 
-        if (password.length < 8) {
+        if (!signIn && password.length < 8) {
             setErrorMsg("Password must be at least 8 characters")
             return
-        } else if (!/(?=.*[!@#$%^&*])/.test(password)) {
+        } else if (!signIn && !/(?=.*[!@#$%^&*])/.test(password)) {
             setErrorMsg("Password must contain at least one special character")
             return
         }
 
-        if (password !== confirmPassword) {
+        if (!signIn && password !== confirmPassword) {
             setErrorMsg("Passwords do not match")
             return
         }
 
-        if (!sport) {
+        if (!signIn && !sport) {
             setErrorMsg("Sport is required")
             return
         }
 
+        await submitForm(username, email, password, confirmPassword, sport)
+
         setErrorMsg("")
         if (!signIn) changeSign?.()
-
-        submitForm({'username': username, 'email': email, 'password': password, 'confirmPassword': confirmPassword, 'sport': sport})
         //requisiçã, caso erro, mostrar que o email já estpa cadastrado "Email is already registered."
     }
 
@@ -89,7 +87,7 @@ function SignForm({ className, signIn, changeSign}: Prop) {
 
 
     return (
-        <form id="form" onSubmit={submitForm} className={cn("flex flex-col items-center gap-4 duration-[1000] transition-all ease-out", className)}>
+        <form id="form" className={cn("flex flex-col items-center gap-4 duration-[1000] transition-all ease-out", className)}>
             <div className="grid gap-4 mb-4">
                 {!signIn && <Input id="username"  name="username" onValueChange={handleUsernameChange}/>}
                 <Input id="email" type="email"  name="email" onValueChange={handleEmailChange}/>
@@ -97,7 +95,7 @@ function SignForm({ className, signIn, changeSign}: Prop) {
                 {!signIn && <Input id="confirmPassword"  name="confirmPassword" type="password" onValueChange={handleConfirmPasswordChange}/>}
                 {!signIn && <Input id="sport"  name="sport" onValueChange={handleSportChange}/>}
             </div>
-           <CustomButton  onClick={SendForm } text={signIn ? "Login" : "Register"}></CustomButton>
+           <CustomButton  onClick={SendForm} text={signIn ? "Login" : "Register"}></CustomButton>
         </form>
     )
 }
