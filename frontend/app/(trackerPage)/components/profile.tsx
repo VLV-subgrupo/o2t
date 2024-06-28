@@ -14,8 +14,6 @@ import {
 import UserProfile from "./userProfile";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { handleGetGoals } from "@/app/_lib/handlers";
 
 
 const Profile = () => {
@@ -65,7 +63,7 @@ const Profile = () => {
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu>
-            <DrawerContent className="outline-none w-[70%] bg-[#0F0F0F]/80 backdrop-blur-md border-none absolute inset-0 mx-auto">
+            <DrawerContent className="outline-none w-[60%] bg-[#0F0F0F]/80 backdrop-blur-md border-none absolute inset-0 mx-auto">
                 <UserProfile/>
             </DrawerContent>
             <DrawerOverlay className="bg-black/70" />

@@ -45,17 +45,17 @@ const UserProfile = () => {
     const handlePasswordChange = (value: string) => setPassword(value)
 
     return (
-        <form className="flex flex-col items-center justify-between duration-[1000] transition-all ease-out p-16 h-full">
-            <div className="flex flex-col justify-between items-start gap-4 w-full">
+        <form className="flex flex-col items-center justify-center duration-[1000] transition-all ease-out p-16 h-full gap-16">
+            <div className="flex flex-col justify-between items-center gap-12 w-full">
                 <h4 className="text-light">Personal Information</h4>
-                <div className="grid grid-cols-2 gap-4 w-full px-8">
+                <div className="flex flex-col items-center justify-center gap-4 w-full px-8">
                     <Input name="username" id="Username" initaialValue={user.name} isRequired={false} isDisabled={true} className=" bg-transparent cursor-not-allowed"/>
-                    <Input name="oldpassword" id="Old Password" initaialValue="" type="password" isRequired={false} className="bg-transparent"/>
                     <Input name="email" id="E-mail" initaialValue={user.email} isRequired={false} isDisabled={true} className="bg-transparent cursor-not-allowed"/>
+                    <Input name="oldpassword" id="Old Password" initaialValue="" type="password" isRequired={false} className="bg-transparent"/>
                     <Input name="password" id="New Password" initaialValue="" type="password" isRequired={false} className={`bg-transparent ${password && password.length < 8 ? "outline-red-500 focus:outline-red-500" : null}`} onValueChange={handlePasswordChange}/>
                 </div>
             </div>
-            <div className="flex flex-col justify-between items-start gap-4 w-full">
+           {/*  <div className="flex flex-col justify-between items-start gap-4 w-full">
                 <h4 className="text-light">Personal Goals</h4>
                 <div className="flex flex-wrap gap-4 justify-around items-center">
                     <Card className="w-[40%]" title='Weight'>
@@ -90,7 +90,7 @@ const UserProfile = () => {
                     </Card>
                 </div>
 
-            </div>
+            </div> */}
             <CustomButton onClick={saveProfile} text={"Save"}></CustomButton>
         </form>
     )

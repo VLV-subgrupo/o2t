@@ -253,7 +253,7 @@ export const handleCreateMetric = async (t: number, value: string) => {
     }
 }
 
-export const handleUpdateMetric = async (t: string, value: string, id: string) => {
+export const handleUpdateMetric = async (t: string, value: string | null, id: string) => {
     const userCookies = Cookies.get('user')
     const token = Cookies.get('token')
     if (userCookies){

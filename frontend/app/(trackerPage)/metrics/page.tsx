@@ -95,7 +95,6 @@ const HealthMetrics = () => {
             return acc;
           }, {} as { [key: string]: string });
         setIniVel(result);
-        console.log(result)
     },[todayMetrics])
 
     const scrollToBottom = () => {
@@ -147,6 +146,7 @@ const HealthMetrics = () => {
         const today = new Date()
         const types = ['WEIGHT', 'HYDRATION', 'SLEEP', 'CALORIES']
         const newMetrics = [kg, l, totalMinutes, kcal]
+        console.log(newMetrics)
         if (todayMetrics.length < 4){
             const presentTypes = new Set(todayMetrics.map(metric => metric[1]));
             const missingTypesWithIndices = types.reduce((missing: number[], type, index) => {
