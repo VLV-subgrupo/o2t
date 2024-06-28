@@ -3,16 +3,24 @@
 import { buttonVariants } from "@/app/_components/ui/button"
 import { Calendar } from "@/app/_components/ui/calendar"
 import { cn } from "@/app/_lib/utils"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-const Historic = () => {
+type Props = {
+    selectDate: (date: Date) => void
+}
+
+const Historic = ({selectDate} : Props) => {
     const [date, setDate] = useState<Date | undefined>(new Date())
     const today = new Date();
+
+    useEffect(() => {
+        if (date) selectDate(date)
+    }, [date])
 
     return (
     <div className="w-full flex flex-col mb-2">
         <div className="bg-darkgray w-full flex justify-between items-center flex-col p-1">
-            <h6 className="text-light select-none">Workout History</h6>
+            <h6 className="text-light select-none">Metrics History</h6>
         </div>
         <Calendar
             mode="single"
@@ -26,6 +34,7 @@ const Historic = () => {
             modifiersClassNames={{
                 outside: 'hidden-day'
             }}
+            fromMonth={new Date(today.getFullYear(), today.getMonth() - 1, )}
             toMonth={new Date(today.getFullYear(), today.getMonth() + 1, 0)}
             selected={date}
             onSelect={setDate}

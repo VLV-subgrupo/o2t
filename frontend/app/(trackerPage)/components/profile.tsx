@@ -12,9 +12,31 @@ import {
     DrawerTrigger,
   } from "../../_components/ui/drawer"
 import UserProfile from "./userProfile";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 
 const Profile = () => {
+    const router = useRouter()
+    const userCookie = Cookies.get('user')
+    const [user, setUser] = useState({
+        name: 'user',
+        id: 0,
+    })
+    useEffect(() => {
+        if(userCookie) {
+            setUser(JSON.parse(userCookie))
+        } else {
+            router.push('/')
+        }
+    }, [])
+    const logoutUser = () => {
+        Cookies.remove('user')
+        Cookies.remove('token')
+        router.push('/')
+    }
+
     return (
         <Drawer>
             <DropdownMenu >
@@ -22,10 +44,10 @@ const Profile = () => {
                     <div className="flex flex-row gap-2 items-center select-none">
                         <div className="flex flex-col">
                             <p className="text-p font-medium text-light text-right">
-                                Username
+                                {user.name}
                             </p>
                             <p className="text-label font-semibold text-lightgray text-right">
-                                #2024
+                                #{user.id}
                             </p>
                         </div>
 
@@ -34,7 +56,7 @@ const Profile = () => {
                         </div>
                     </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="outline-none bg-darkgray text-light text-label w-44 mr-10 p-0 border border-gay">
+                <DropdownMenuContent className="outline-none bg-darkgray text-light text-label w-44 mr-10 p-0 border border-gay ">
                     <DropdownMenuGroup>
                         <DrawerTrigger asChild>
                             <DropdownMenuItem className="group">
@@ -42,19 +64,19 @@ const Profile = () => {
                                 Profile
                             </DropdownMenuItem>
                         </DrawerTrigger>
-                        <DropdownMenuItem className="group">
+                        <DropdownMenuItem onClick={logoutUser} className="group">
                                 <LogOut className="size-4 stroke-light group-focus:ml-2 transition-all ease-smooth duration-300"/>
                                 Logout
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu>
-            <DrawerContent className="outline-none w-[70%] bg-[#0F0F0F]/70 backdrop-blur-sm border-none place-self-center h-[90%]">
-                <UserProfile />
+            <DrawerContent className="outline-none w-[60%] bg-[#0F0F0F]/80 backdrop-blur-md border-none absolute inset-0 mx-auto">
+                <UserProfile/>
             </DrawerContent>
-            <DrawerOverlay className="bg-black/50" />
+            <DrawerOverlay className="bg-black/70" />
         </Drawer>
-    );
+    )
 }
 
 export default Profile;

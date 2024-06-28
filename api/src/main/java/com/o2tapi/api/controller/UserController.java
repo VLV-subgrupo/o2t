@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.o2tapi.api.models.User;
+import com.o2tapi.api.pojo.CrossPermission;
 import com.o2tapi.api.pojo.PasswordDTO;
 import com.o2tapi.api.pojo.RegisterRequest;
 import com.o2tapi.api.pojo.UserDTO;
@@ -25,7 +26,7 @@ import io.swagger.annotations.ApiOperation;
 import jakarta.validation.Valid;
 
 
-@CrossOrigin
+@CrossOrigin(origins = CrossPermission.allowed_url)
 @Api(value = "UserController", produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
 @RequestMapping("/v1")

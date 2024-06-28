@@ -11,8 +11,19 @@ import {
 import ProfileForms from "./conponents/profileForms";
 import Logo from "../_components/o2t_logo";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie"
 
 export default function Home() {
+    const router = useRouter()
+    const userRaw = Cookies.get("user")
+    const token = Cookies.get("token")
+    if (userRaw && token) {
+        router.push('/dashboard')
+    } else {
+        Cookies.remove("user")
+        Cookies.remove("token")
+    }
     const [open, setOpen] = useState(false)
     const [sign, setSign] = useState(false)
 
@@ -30,7 +41,7 @@ export default function Home() {
                         <Image alt="UsainBoltPhoto" src="/UsainBolt.jpg" layout='fill' objectFit='cover'></Image>
                         <div className="absolute inset-0 bg-gradient-to-r from-darkgray/50 to-transparent"></div>
                     </div>
-                    <div className="w-full px-[60px] py-8 sticky flex flex-row items-center justify-between mix-blend-difference">
+                    <div className="w-full px-[60px] py-8 flex flex-row items-center justify-between mix-blend-difference relative">
                         <Logo className=""/>
                         <DrawerTrigger asChild>
                             <div className="flex flex-row items-center justify-between gap-6 select-none">
@@ -42,7 +53,7 @@ export default function Home() {
                                 </div>
                             </div>
                         </DrawerTrigger>
-                        <DrawerContent className="outline-none w-[60%] bg-[#0F0F0F]/70 backdrop-blur-md border-none place-self-center h-[90%]">
+                        <DrawerContent className="flex flex-col outline-none w-[60%] bg-[#0F0F0F]/70 backdrop-blur-md border-none absolute inset-0 mx-auto">
                             <ProfileForms signIn={sign} />
                         </DrawerContent>
                     </div>

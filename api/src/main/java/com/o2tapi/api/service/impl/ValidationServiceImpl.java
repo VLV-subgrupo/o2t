@@ -13,14 +13,18 @@ import org.springframework.stereotype.Service;
 
 import com.o2tapi.api.exceptions.EntityNotFound;
 import com.o2tapi.api.exceptions.InvalidFieldFormat;
+import com.o2tapi.api.models.Goal;
 import com.o2tapi.api.models.Label;
+import com.o2tapi.api.models.Metric;
 import com.o2tapi.api.models.User;
 import com.o2tapi.api.pojo.LabelDTO;
 import com.o2tapi.api.models.Workout;
 import com.o2tapi.api.pojo.TimerRequest;
 import com.o2tapi.api.pojo.WorkoutDTO;
 import com.o2tapi.api.repository.UserRepository;
+import com.o2tapi.api.repository.GoalRepository;
 import com.o2tapi.api.repository.LabelRepository;
+import com.o2tapi.api.repository.MetricRepository;
 import com.o2tapi.api.repository.WorkoutRepository;
 import com.o2tapi.api.service.ValidationService;
 
@@ -37,6 +41,12 @@ public class ValidationServiceImpl implements ValidationService {
     
     @Autowired
     private WorkoutRepository workoutRepository;
+
+    @Autowired
+    private MetricRepository metricRepository;
+
+    @Autowired
+    private GoalRepository goalRepository; 
 
     @Override
     public User validateUser(Long id) {
@@ -60,9 +70,9 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     @Override
-    public void validateNotEmptyFields(String[] fields) {
-        for (String f : fields) {
-            if (f == null || f.isEmpty()) {
+    public void validateNotEmptyFields(Object[] fields) {
+        for (Object f : fields) {
+            if (f == null || (f instanceof String && ((String) f).isEmpty())) {
                 throw new InvalidFieldFormat("The field " + f + " is required");
             }
         }
@@ -84,6 +94,17 @@ public class ValidationServiceImpl implements ValidationService {
         }
 
         return label.get();
+    }
+
+    @Override
+    public Goal validateGoal(Long id) {
+        Optional<Goal> goal = goalRepository.findById(id);
+
+        if (goal.isEmpty()) {
+            throw new EntityNotFoundException("Goal not found with id" + id);
+        }
+
+        return goal.get();
     }
 
     @Override
@@ -134,6 +155,17 @@ public class ValidationServiceImpl implements ValidationService {
         }
 
         return workout.get();
+    }
+
+    @Override
+    public Metric validateMetric(Long id) {
+        Optional<Metric> metric = metricRepository.findById(id);
+
+        if (metric.isEmpty()) {
+            throw new EntityNotFound("Metric of id " + id + " not found");
+        }
+
+        return metric.get();
     }
 
     @Override

@@ -1,25 +1,43 @@
 "use client"
 
-import { useState, useRef, Fragment } from 'react';
+import { useState, useRef, Fragment, useEffect } from 'react';
 
 type PinInputProps = {
     length?: number;
     childrenI?: number;
     children?: React.ReactElement,
+    ret ?: (ret : string, i: number) => void,
+    metricType : number
+    initialVal ?: string
 }
 
-const InputNum = ({length = 1, childrenI, children}: PinInputProps) => {
-  const [pin, setPin] = useState(Array(length).fill(' '));
+const InputNum = ({length = 1, childrenI, children, ret, metricType, initialVal}: PinInputProps) => {
+  const [pin, setPin] = useState(Array(length).fill(''));
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
+  const [retValues, setRetValues] = useState(pin.map(() => '0'));
 
   const focusInput = (index: number, next: number) => {
     if (index < length - 1) {
         inputsRef.current[index + next]?.focus();
     } else if(index == length - 1 && next <= 0) {
         inputsRef.current[length - 2]?.focus();
-        //inputsRef.current[index]?.blur();
     }
   };
+
+  useEffect(() => {
+    if (ret) ret(retValues.join(''), metricType)
+  }, [retValues]);
+
+  useEffect(() => {
+    if(initialVal){
+        let newPin = initialVal.split('')
+        while(newPin.length > length) newPin.pop()
+        while (newPin.length < length) {
+            newPin.unshift('0');
+        }
+        setPin(newPin)
+    }
+  }, [initialVal])
 
   const handleChange = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     const value = e.key;
@@ -30,16 +48,21 @@ const InputNum = ({length = 1, childrenI, children}: PinInputProps) => {
         newPin[index] = ''
         focusInput(index, -1);
         setPin(newPin);
+        const newRetValue = [...retValues];
+        newRetValue[index] = '0';
+        setRetValues(newRetValue)
     } else if (e.key == 'ArrowLeft'){
         focusInput(index, -1);
     } else if (e.key == 'ArrowRight'){
         focusInput(index, 1);
     } else if (cleanValue == value) {
-        console.log(e.key, e.key >= '0', e.key <= '9');
         const newPin = [...pin];
         newPin[index] = e.key
         focusInput(index, 1);
         setPin(newPin);
+        const newRetValues = [...retValues];
+        newRetValues[index] = value;
+        setRetValues(newRetValues)
     } else if (e.key == 'Tab') {
         return
     }
