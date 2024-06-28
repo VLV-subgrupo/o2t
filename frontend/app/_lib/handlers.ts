@@ -148,6 +148,10 @@ export const handleAddLabel = async (name: string, color: string) => {
         if (!response.ok) {
             throw new Error("Couldn't add label")
         }
+
+        let data = await response.json()
+
+        return data.id
     }
 }
 
