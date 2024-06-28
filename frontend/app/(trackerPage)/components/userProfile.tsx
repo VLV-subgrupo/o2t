@@ -11,10 +11,17 @@ import { handleUpdatePassword } from "@/app/_lib/handlers";
 const UserProfile = () => {
     const router = useRouter()
     const userCookie = Cookies.get('user')
-    const user = userCookie ? JSON.parse(userCookie) : null
-    if (!user) {
-        router.push('/')
-    }
+    const [user, setUser] = useState({
+        name: 'user',
+        email: 'email@email.com'
+    })
+    useEffect(() => {
+        if(userCookie) {
+            setUser(JSON.parse(userCookie))
+        } else {
+            router.push('/')
+        }
+    }, [])
 
     const [retValues, setRetValues] = useState(['0000', '0000', '000', '0000'])
     const [newPassword, setNewPassword] = useState('')
@@ -53,8 +60,8 @@ const UserProfile = () => {
             <div className="flex flex-col justify-between items-center gap-12 w-full">
                 <h4 className="text-light">Personal Information</h4>
                 <div className="flex flex-col items-center justify-center gap-4 w-full px-8">
-                    <Input name="username" id="Username" initaialValue={user ? user.name : router.push('/')} isRequired={false} isDisabled={true} className=" bg-transparent cursor-not-allowed"/>
-                    <Input name="email" id="E-mail" initaialValue={user ? user.email : router.push('/')} isRequired={false} isDisabled={true} className="bg-transparent cursor-not-allowed"/>
+                    <Input name="username" id="Username" initaialValue={user.name} isRequired={false} isDisabled={true} className=" bg-transparent cursor-not-allowed"/>
+                    <Input name="email" id="E-mail" initaialValue={user.email} isRequired={false} isDisabled={true} className="bg-transparent cursor-not-allowed"/>
                     <Input name="oldpassword" id="Old Password" onValueChange={handleOldPasswordChange} initaialValue="" type="password" isRequired={false} className={`bg-transparent ${oldPassError ? "outline-red-500 focus:outline-red-500" : null}`}/>
                     <Input name="password" id="New Password" initaialValue="" onValueChange={handleNewPasswordChange} type="password" isRequired={false} className={`bg-transparent ${newPassword && newPassword.length < 8 ? "outline-red-500 focus:outline-red-500" : null}`}/>
                 </div>

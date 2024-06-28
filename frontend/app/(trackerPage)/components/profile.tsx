@@ -14,15 +14,23 @@ import {
 import UserProfile from "./userProfile";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 
 const Profile = () => {
     const router = useRouter()
     const userCookie = Cookies.get('user')
-    const user = userCookie ? JSON.parse(userCookie) : null
-    if (!user) {
-        router.push('/')
-    }
+    const [user, setUser] = useState({
+        name: 'user',
+        id: 0,
+    })
+    useEffect(() => {
+        if(userCookie) {
+            setUser(JSON.parse(userCookie))
+        } else {
+            router.push('/')
+        }
+    }, [])
     const logoutUser = () => {
         Cookies.remove('user')
         Cookies.remove('token')
