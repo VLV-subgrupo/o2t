@@ -7,29 +7,56 @@ import AddLabel from "../components/addLabel";
 import Cookies from "js-cookie"
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { handleCreateWorkout, handleGetAllUserLabels, handleGetIndexesOfLabels } from "@/app/_lib/handlers";
+import { handleCreateWorkout, handleDeleteWorkout, handleGetAllUserLabels, handleGetAllUserWorkouts, handleUpdateWorkout } from "@/app/_lib/handlers";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/app/_components/ui/tooltip";
 
 const Log = () => {
-    const [date, setDate] = useState<Date>()
+    const [date, setDate] = useState<Date>(new Date(Date.now()))
     const [userTags, setUserTags] = useState<string[][]>([])
-    const [workoutTags, setWorkoutTags] = useState<string[][]>([]);
+    const [workoutTags, setWorkoutTags] = useState<string[][]>([])
+    const [title, setTitle] = useState('')
+    const [description, setDescription] = useState('')
+    const [workouts, setWorkouts] = useState([])
+    const [workoutId, setWorkoutId] = useState(-1)
 
     useEffect(() => {
-        handleGetAllUserLabels().then(labels => setUserTags(labels || []))
-    })
+        
+        const getAllUserWorkouts = async () => {
+            let workouts = await handleGetAllUserWorkouts()
+            setWorkouts(workouts || [])
+        }
+        getAllUserWorkouts()
+    }, [])
 
+    const cleanAllFields = () => {
+        setTitle('')
+        setDescription('')
+        setDate(new Date(Date.now()))
+        setWorkoutTags([])
+        setWorkoutId(-1)
+    }
+    const deleteWorkout = async () => {
+        if (workoutId !== -1) {
+            await handleDeleteWorkout(workoutId)
+            let workouts = await handleGetAllUserWorkouts()
+            setWorkouts(workouts || [])
+        }
+        cleanAllFields()
+    }
     const submitWorkout = async () => {
         const userCookie = Cookies.get('user')
         if (userCookie) {
             const user = JSON.parse(userCookie)
             const registrationDate = date!
-            const title = document.getElementById("workoutTitle")!.innerText
-            const description = document.getElementById("workoutDescription")!.innerText
             const createdBy = user.id
-            const labels = await handleGetIndexesOfLabels(workoutTags) || []
-
-            await handleCreateWorkout(registrationDate, title, description, createdBy, labels)
+            const labels = workoutTags.map(tag => parseInt(tag[2]))
+            if (workoutId === -1) {
+                await handleCreateWorkout(registrationDate, title, description, createdBy, labels)
+            } else {
+                await handleUpdateWorkout(workoutId, registrationDate, title, description, createdBy, labels)
+            }
+            let workouts = await handleGetAllUserWorkouts()
+            setWorkouts(workouts || [])
         } else {
             Cookies.remove('user')
             Cookies.remove('token')
@@ -45,7 +72,7 @@ const Log = () => {
                         <TooltipProvider delayDuration={100}>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <div className="size-[42px] rounded-full bg-gray cursor-pointer group -mr-1 border-[2px] border-darkgray grid place-items-center hover:bg-lightgray transition-colors duration-300">
+                                    <div onClick={cleanAllFields} className="size-[42px] rounded-full bg-gray cursor-pointer group -mr-1 border-[2px] border-darkgray grid place-items-center hover:bg-lightgray transition-colors duration-300">
                                         <Plus className="size-4 stroke-lightgray group-hover:stroke-darkgray"/>
                                     </div>
                                 </TooltipTrigger>
@@ -57,7 +84,7 @@ const Log = () => {
                         <TooltipProvider delayDuration={100}>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <div className="size-[42px] rounded-full bg-gray cursor-pointer group -mr-1 border-[2px] border-darkgray grid place-items-center hover:bg-lightgray transition-colors duration-300">
+                                    <div onClick={submitWorkout} className="size-[42px] rounded-full bg-gray cursor-pointer group -mr-1 border-[2px] border-darkgray grid place-items-center hover:bg-lightgray transition-colors duration-300">
                                         <Save className="size-4 stroke-lightgray group-hover:stroke-darkgray"/>
                                     </div>
                                 </TooltipTrigger>
@@ -69,7 +96,7 @@ const Log = () => {
                         <TooltipProvider delayDuration={100}>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <div className="size-[42px] rounded-full bg-gray cursor-pointer group -mr-1 border-[2px] border-darkgray grid place-items-center hover:bg-lightgray transition-colors duration-300">
+                                    <div onClick={deleteWorkout} className="size-[42px] rounded-full bg-gray cursor-pointer group -mr-1 border-[2px] border-darkgray grid place-items-center hover:bg-lightgray transition-colors duration-300">
                                         <Trash2 className="size-4 stroke-lightgray group-hover:stroke-darkgray"/>
                                     </div>
                                     </TooltipTrigger>
@@ -81,11 +108,11 @@ const Log = () => {
                     </div>
                     <DatePicker date={date} setDate={setDate} className="w-full justify-start text-left font-semibold text-p bg-transparent"></DatePicker>
                 </div>
-                <input id="workoutTitle" type="text" placeholder="Workout Title" className="bg-transparent outline-none w-full text-h4 font-bold placeholder-lightgray px-4 uppercase"></input>
+                <input value={title} onChange={e => setTitle(e.target.value)} type="text" placeholder="Workout Title" className="bg-transparent outline-none w-full text-h4 font-bold placeholder-lightgray px-4 uppercase"></input>
                 <AddLabel userTags={userTags} setUserTags={setUserTags} workoutTags={workoutTags} setWorkoutTags={setWorkoutTags} />
-                <textarea id="workoutDescription" placeholder="Workout Description" className="bg-transparent outline-none w-full h-full text-p font-bold placeholder-lightgray border border-gray rounded-lg p-4 resize-none"></textarea>
+                <textarea value={description} onChange={e => setDescription(e.target.value)} id="workoutDescription" placeholder="Workout Description" className="bg-transparent outline-none w-full h-full text-p font-bold placeholder-lightgray border border-gray rounded-lg p-4 resize-none"></textarea>
             </div>
-            <ScrollableList />
+            <ScrollableList workouts={workouts} setWorkouts={setWorkouts} workoutTags={workoutTags} setWorkoutTags={setWorkoutTags} title={title} setTitle={setTitle} description={description} setDescription={setDescription} date={date} setDate={setDate} setWorkoutId={setWorkoutId} />
         </div>
     );
 }

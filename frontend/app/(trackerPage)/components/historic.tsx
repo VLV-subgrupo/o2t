@@ -20,7 +20,7 @@ const Historic = ({selectDate} : Props) => {
     return (
     <div className="w-full flex flex-col mb-2">
         <div className="bg-darkgray w-full flex justify-between items-center flex-col p-1">
-            <h6 className="text-light select-none">Workout History</h6>
+            <h6 className="text-light select-none">Metrics History</h6>
         </div>
         <Calendar
             mode="single"

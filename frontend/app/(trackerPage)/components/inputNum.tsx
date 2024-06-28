@@ -6,7 +6,7 @@ type PinInputProps = {
     length?: number;
     childrenI?: number;
     children?: React.ReactElement,
-    ret : (ret : string, i: number) => void,
+    ret ?: (ret : string, i: number) => void,
     metricType : number
     initialVal ?: string
 }
@@ -25,7 +25,7 @@ const InputNum = ({length = 1, childrenI, children, ret, metricType, initialVal}
   };
 
   useEffect(() => {
-    ret(retValues.join(''), metricType)
+    if (ret) ret(retValues.join(''), metricType)
   }, [retValues]);
 
   useEffect(() => {

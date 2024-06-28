@@ -6,6 +6,7 @@ import Card from "./card";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { handleUpdatePassword } from "@/app/_lib/handlers";
 
 const UserProfile = () => {
     const router = useRouter()
@@ -15,7 +16,13 @@ const UserProfile = () => {
         router.push('/')
     }
 
-    const [retValues, setRetValues] = useState(['0000','0000','000','0000'])
+    const [retValues, setRetValues] = useState(['0000', '0000', '000', '0000'])
+    const [newPassword, setNewPassword] = useState('')
+    const [oldPassword, setOldPassword] = useState('')
+    const [oldPassError, setOldPassError] = useState(false)
+
+    const handleNewPasswordChange = (value: string) => setNewPassword(value);
+    const handleOldPasswordChange = (value: string) => setOldPassword(value);
 
     const returnValues = (ret : string, i: number) => {
         const newRetValues = [...retValues];
@@ -23,22 +30,19 @@ const UserProfile = () => {
         setRetValues(newRetValues);
     }
 
+    const changePassword = async () => {
+        try {
+            await handleUpdatePassword(oldPassword, newPassword)
+            setOldPassError(false)
+        } catch (error) {
+            setOldPassError(true)
+            console.log(error)
+        }
+    }
+
     const saveProfile = () =>{
-        if(!!password && password.length < 8) return
-
-        // Calcula kg
-        const kg = (parseInt(retValues[0], 10)/10).toFixed(1);
-
-        // Calcula o total de minutos
-        const hours = parseInt(retValues[1].substring(0, 2), 10);
-        const minutes = parseInt(retValues[1].substring(2), 10);
-        const totalMinutes = (hours * 60 + minutes).toString();
-
-        // Calcula Hidratação
-        const l = (parseInt(retValues[2], 10)/10).toFixed(1);
-
-        // Calcula Calorias
-        const kcal = parseInt(retValues[3], 10).toString();
+        if(!!newPassword && newPassword.length < 8) return
+        changePassword()
     }
 
     const [password, setPassword] = useState("");
@@ -49,10 +53,10 @@ const UserProfile = () => {
             <div className="flex flex-col justify-between items-center gap-12 w-full">
                 <h4 className="text-light">Personal Information</h4>
                 <div className="flex flex-col items-center justify-center gap-4 w-full px-8">
-                    <Input name="username" id="Username" initaialValue={user.name} isRequired={false} isDisabled={true} className=" bg-transparent cursor-not-allowed"/>
-                    <Input name="email" id="E-mail" initaialValue={user.email} isRequired={false} isDisabled={true} className="bg-transparent cursor-not-allowed"/>
-                    <Input name="oldpassword" id="Old Password" initaialValue="" type="password" isRequired={false} className="bg-transparent"/>
-                    <Input name="password" id="New Password" initaialValue="" type="password" isRequired={false} className={`bg-transparent ${password && password.length < 8 ? "outline-red-500 focus:outline-red-500" : null}`} onValueChange={handlePasswordChange}/>
+                    <Input name="username" id="Username" initaialValue={user ? user.name : router.push('/')} isRequired={false} isDisabled={true} className=" bg-transparent cursor-not-allowed"/>
+                    <Input name="email" id="E-mail" initaialValue={user ? user.email : router.push('/')} isRequired={false} isDisabled={true} className="bg-transparent cursor-not-allowed"/>
+                    <Input name="oldpassword" id="Old Password" onValueChange={handleOldPasswordChange} initaialValue="" type="password" isRequired={false} className={`bg-transparent ${oldPassError ? "outline-red-500 focus:outline-red-500" : null}`}/>
+                    <Input name="password" id="New Password" initaialValue="" onValueChange={handleNewPasswordChange} type="password" isRequired={false} className={`bg-transparent ${newPassword && newPassword.length < 8 ? "outline-red-500 focus:outline-red-500" : null}`}/>
                 </div>
             </div>
            {/*  <div className="flex flex-col justify-between items-start gap-4 w-full">
