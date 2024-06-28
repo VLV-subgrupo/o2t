@@ -8,10 +8,11 @@ type PinInputProps = {
     children?: React.ReactElement,
     ret : (ret : string, i: number) => void,
     metricType : number
+    initialVal ?: string
 }
 
-const InputNum = ({length = 1, childrenI, children, ret, metricType}: PinInputProps) => {
-  const [pin, setPin] = useState(Array(length).fill(' '));
+const InputNum = ({length = 1, childrenI, children, ret, metricType, initialVal}: PinInputProps) => {
+  const [pin, setPin] = useState(Array(length).fill(''));
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const [retValues, setRetValues] = useState(pin.map(() => '0'));
 
@@ -26,6 +27,17 @@ const InputNum = ({length = 1, childrenI, children, ret, metricType}: PinInputPr
   useEffect(() => {
     ret(retValues.join(''), metricType)
   }, [retValues]);
+
+  useEffect(() => {
+    if(initialVal){
+        let newPin = initialVal.split('')
+        while(newPin.length > length) newPin.pop()
+        while (newPin.length < length) {
+            newPin.unshift('0');
+        }
+        setPin(newPin)
+    }
+  }, [initialVal])
 
   const handleChange = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     const value = e.key;
@@ -44,7 +56,6 @@ const InputNum = ({length = 1, childrenI, children, ret, metricType}: PinInputPr
     } else if (e.key == 'ArrowRight'){
         focusInput(index, 1);
     } else if (cleanValue == value) {
-        console.log(e.key, e.key >= '0', e.key <= '9');
         const newPin = [...pin];
         newPin[index] = e.key
         focusInput(index, 1);

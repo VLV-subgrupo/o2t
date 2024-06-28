@@ -59,9 +59,6 @@ function SignForm({ className, signIn, changeSign}: Prop) {
         if (!signIn && password.length < 8) {
             setErrorMsg("Password must be at least 8 characters")
             return
-        } else if (!signIn && !/(?=.*[!@#$%^&*])/.test(password)) {
-            setErrorMsg("Password must contain at least one special character")
-            return
         }
 
         if (!signIn && password !== confirmPassword) {
@@ -87,16 +84,19 @@ function SignForm({ className, signIn, changeSign}: Prop) {
 
 
     return (
-        <form id="form" className={cn("flex flex-col items-center gap-4 duration-[1000] transition-all ease-out", className)}>
-            <div className="grid gap-4 mb-4">
-                {!signIn && <Input id="username"  name="username" onValueChange={handleUsernameChange}/>}
-                <Input id="email" type="email"  name="email" onValueChange={handleEmailChange}/>
-                <Input id="password"  name="password" type="password" onValueChange={handlePasswordChange}/>
-                {!signIn && <Input id="confirmPassword"  name="confirmPassword" type="password" onValueChange={handleConfirmPasswordChange}/>}
-                {!signIn && <Input id="sport"  name="sport" onValueChange={handleSportChange}/>}
-            </div>
-           <CustomButton  onClick={SendForm} text={signIn ? "Login" : "Register"}></CustomButton>
-        </form>
+        <div className={cn("flex flex-col items-center gap-4 duration-[1000] transition-all ease-out", className)}>
+            <p className="label text-red-400">{errorMsg}</p>
+            <form id="form">
+                <div className="grid gap-4 mb-4">
+                    {!signIn && <Input id="username"  name="username" onValueChange={handleUsernameChange}/>}
+                    <Input id="email" type="email"  name="email" onValueChange={handleEmailChange}/>
+                    <Input id="password"  name="password" type="password" onValueChange={handlePasswordChange}/>
+                    {!signIn && <Input id="confirmPassword"  name="confirmPassword" type="password" onValueChange={handleConfirmPasswordChange}/>}
+                    {!signIn && <Input id="sport"  name="sport" onValueChange={handleSportChange}/>}
+                </div>
+            </form>
+            <CustomButton  onClick={SendForm} text={signIn ? "Login" : "Register"}></CustomButton>
+        </div>
     )
 }
 

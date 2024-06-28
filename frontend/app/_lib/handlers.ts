@@ -1,4 +1,6 @@
+import { error } from "console";
 import Cookies from "js-cookie";
+import { SetStateAction } from "react";
 
 export const handleLogin = async (email: string, password: string) => {
     const response = await fetch('http://localhost:8080/v1/auth/login', {
@@ -81,7 +83,7 @@ export const handleGetAllUserLabels = async () => {
             let labelColor: string = element.color
             labels.push([labelName, labelColor])
         })
-        
+
         return labels
     }
 }
@@ -163,7 +165,7 @@ export const handleGetIndexesOfLabels = async (labels: string[][]) => {
                 }
             })
         }
-        
+
         return ids
     }
 }
@@ -188,5 +190,91 @@ export const handleCreateWorkout = async (date: Date, title: string, description
         if (!response.ok) {
             throw Error("Couldn't create workout")
         }
+    }
+}
+
+export const handleGetMetrics = async (fromDate: Date, toDate: Date, type = -1) => {
+    const userCookies = Cookies.get('user')
+    const token = Cookies.get('token')
+    if (userCookies){
+        try {
+            const user = JSON.parse(userCookies)
+            const response = await fetch(`http://localhost:8080/v1/metric/user/${user.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token,
+                }
+            })
+
+            let metrics: string[][] = []
+            const data: Array<any> = await response.json()
+            const types = ['WEIGHT', 'HYDRATION', 'SLEEP', 'CALORIES']
+            data.forEach((element) => {
+                const elementDate = new Date(element.registrationDate)
+                if(elementDate >= fromDate && elementDate <= toDate && (type == -1 || types[type] == element.metricType)){
+                    let id: string = element.id
+                    let date: string = element.registrationDate
+                    let type: string = element.metricType
+                    let value: string = element.value
+                    metrics.push([date, type, value, id])
+                }
+            })
+            return metrics
+        } catch (error) {
+            console.log(error)
+        }
+    }
+}
+
+export const handleCreateMetric = async (t: number, value: string) => {
+    const userCookies = Cookies.get('user')
+    const token = Cookies.get('token')
+    if (userCookies){
+        const today = new Date()
+        const types = ['WEIGHT', 'HYDRATION', 'SLEEP', 'CALORIES']
+        const user = JSON.parse(userCookies)
+        const response = await fetch('http://localhost:8080/v1/metric', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify({
+                "createdBy": user.id,
+                "registrationDate": today,
+                "metricType": types[t],
+                "value": value
+            })
+        })
+        if (!response.ok) {
+            throw Error("Couldn't create workout")
+        }
+    }
+}
+
+export const handleUpdateMetric = async (t: string, value: string, id: string) => {
+    const userCookies = Cookies.get('user')
+    const token = Cookies.get('token')
+    if (userCookies){
+        const today = new Date()
+        const user = JSON.parse(userCookies)
+            try {
+                const response = await fetch(`http://localhost:8080/v1/metric/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token,
+                    },
+                    body: JSON.stringify({
+                        "createdBy": user.id,
+                        "registrationDate": today,
+                        "metricType": t,
+                        "value": value
+                    })
+                })
+            }catch (error) {
+                console.log(error)
+            }
     }
 }

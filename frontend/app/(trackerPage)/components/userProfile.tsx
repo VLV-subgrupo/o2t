@@ -5,7 +5,7 @@ import InputNum from "./inputNum";
 import Card from "./card";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const UserProfile = () => {
     const router = useRouter()
@@ -15,7 +15,7 @@ const UserProfile = () => {
         router.push('/')
     }
 
-    const [retValues, setRetValues] = useState(['0000', '0000', '000', '0000'])
+    const [retValues, setRetValues] = useState(['0000','0000','000','0000'])
 
     const returnValues = (ret : string, i: number) => {
         const newRetValues = [...retValues];
@@ -23,8 +23,8 @@ const UserProfile = () => {
         setRetValues(newRetValues);
     }
 
-    const submitMetrics = () =>{
-        console.log(retValues)
+    const saveProfile = () =>{
+        if(!!password && password.length < 8) return
 
         // Calcula kg
         const kg = (parseInt(retValues[0], 10)/10).toFixed(1);
@@ -32,16 +32,17 @@ const UserProfile = () => {
         // Calcula o total de minutos
         const hours = parseInt(retValues[1].substring(0, 2), 10);
         const minutes = parseInt(retValues[1].substring(2), 10);
-        const totalMinutes = hours * 60 + minutes;
+        const totalMinutes = (hours * 60 + minutes).toString();
 
         // Calcula Hidratação
         const l = (parseInt(retValues[2], 10)/10).toFixed(1);
 
         // Calcula Calorias
-        const kcal = parseInt(retValues[3], 10)
-
-        console.log(kg, totalMinutes, l, kcal)
+        const kcal = parseInt(retValues[3], 10).toString();
     }
+
+    const [password, setPassword] = useState("");
+    const handlePasswordChange = (value: string) => setPassword(value)
 
     return (
         <form className="flex flex-col items-center justify-between duration-[1000] transition-all ease-out p-16 h-full">
@@ -49,9 +50,9 @@ const UserProfile = () => {
                 <h4 className="text-light">Personal Information</h4>
                 <div className="grid grid-cols-2 gap-4 w-full px-8">
                     <Input name="username" id="Username" initaialValue={user.name} isRequired={false} isDisabled={true} className=" bg-transparent cursor-not-allowed"/>
-                    <Input name="oldpassword" id="Old Password" initaialValue="12345678" type="password" isRequired={false} className="bg-transparent"/>
+                    <Input name="oldpassword" id="Old Password" initaialValue="" type="password" isRequired={false} className="bg-transparent"/>
                     <Input name="email" id="E-mail" initaialValue={user.email} isRequired={false} isDisabled={true} className="bg-transparent cursor-not-allowed"/>
-                    <Input name="password" id="New Password" initaialValue="12345678" type="password" isRequired={false} className="bg-transparent"/>
+                    <Input name="password" id="New Password" initaialValue="" type="password" isRequired={false} className={`bg-transparent ${password && password.length < 8 ? "outline-red-500 focus:outline-red-500" : null}`} onValueChange={handlePasswordChange}/>
                 </div>
             </div>
             <div className="flex flex-col justify-between items-start gap-4 w-full">
@@ -59,7 +60,7 @@ const UserProfile = () => {
                 <div className="flex flex-wrap gap-4 justify-around items-center">
                     <Card className="w-[40%]" title='Weight'>
                         <div className="flex flex-row gap-2 items-center justify-center">
-                            <InputNum metricType={0} ret={returnValues} length={4} childrenI={2}>
+                            <InputNum metricType={0} ret={returnValues} length={4} childrenI={2} initialVal={retValues[0]}>
                                 <div className="size-2 bg-lightgray mt-8 mx-1"></div>
                             </InputNum>
                             <h6 className="text-lightgray select-none mt-8">kg</h6>
@@ -67,7 +68,7 @@ const UserProfile = () => {
                     </Card>
                     <Card className="w-[40%]" title='Sleep'>
                         <div className="flex flex-row items-center justify-center">
-                            <InputNum metricType={1} ret={returnValues} length={4} childrenI={1}>
+                            <InputNum metricType={1} ret={returnValues} length={4} childrenI={1} initialVal={retValues[0]}>
                                 <h6 className="text-lightgray select-none mt-8 mx-1">h</h6>
                             </InputNum>
                             <h6 className="text-lightgray select-none mt-8">min</h6>
@@ -75,7 +76,7 @@ const UserProfile = () => {
                     </Card>
                     <Card className="w-[40%]" title='Hydration'>
                         <div className="flex flex-row gap-2 items-center justify-center">
-                            <InputNum metricType={2} ret={returnValues} length={3} childrenI={1}>
+                            <InputNum metricType={2} ret={returnValues} length={3} childrenI={1} initialVal={retValues[0]}>
                                 <div className="size-2 bg-lightgray mt-8 mx-1"></div>
                             </InputNum>
                             <h6 className="text-lightgray select-none mt-8">L</h6>
@@ -83,14 +84,14 @@ const UserProfile = () => {
                     </Card>
                     <Card className="w-[40%]" title='Calories Burned'>
                         <div className="flex flex-row gap-2 items-center justify-center">
-                            <InputNum metricType={3} ret={returnValues} length={4}/>
+                            <InputNum metricType={3} ret={returnValues} length={4} initialVal={retValues[0]}/>
                             <h6 className="text-lightgray select-none mt-8">kcal</h6>
                         </div>
                     </Card>
                 </div>
 
             </div>
-           <CustomButton text={"Save"}></CustomButton>
+            <CustomButton onClick={saveProfile} text={"Save"}></CustomButton>
         </form>
     )
 }
